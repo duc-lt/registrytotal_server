@@ -19,16 +19,16 @@ export class ServiceProvidersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.serviceProvidersService.findOne(+id);
+    return this.serviceProvidersService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateServiceProviderDto: UpdateServiceProviderDto) {
-    return this.serviceProvidersService.update(+id, updateServiceProviderDto);
+    return this.serviceProvidersService.update(id, updateServiceProviderDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.serviceProvidersService.remove(+id);
+    return this.serviceProvidersService.remove(id);
   }
 }

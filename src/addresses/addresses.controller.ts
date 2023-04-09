@@ -19,16 +19,16 @@ export class AddressesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.addressesService.findOne(+id);
+    return this.addressesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAddressDto: UpdateAddressDto) {
-    return this.addressesService.update(+id, updateAddressDto);
+    return this.addressesService.update(id, updateAddressDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.addressesService.remove(+id);
+    return this.addressesService.remove(id);
   }
 }

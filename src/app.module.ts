@@ -9,6 +9,7 @@ import { AccountsModule } from './accounts/accounts.module';
 import { InspectionCertsModule } from './inspection-certs/inspection-certs.module';
 import { ServiceProvidersModule } from './service-providers/service-providers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
@@ -31,9 +32,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_NAME'),
+          autoLoadEntities: true,
+          extra: {
+            charset: 'UTF8_GENERAL_CI',
+          },
         };
       },
       inject: [ConfigService],
+      dataSourceFactory: async (options) => {
+        const dataSource = await new DataSource(options).initialize();
+        return dataSource;
+      },
     }),
   ],
   controllers: [AppController],

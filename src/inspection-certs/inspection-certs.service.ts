@@ -12,15 +12,15 @@ export class InspectionCertsService {
     return `This action returns all inspectionCerts`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} inspectionCert`;
   }
 
-  update(id: number, updateInspectionCertDto: UpdateInspectionCertDto) {
+  update(id: string, updateInspectionCertDto: UpdateInspectionCertDto) {
     return `This action updates a #${id} inspectionCert`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} inspectionCert`;
   }
 }

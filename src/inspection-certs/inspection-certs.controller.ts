@@ -19,16 +19,16 @@ export class InspectionCertsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.inspectionCertsService.findOne(+id);
+    return this.inspectionCertsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateInspectionCertDto: UpdateInspectionCertDto) {
-    return this.inspectionCertsService.update(+id, updateInspectionCertDto);
+    return this.inspectionCertsService.update(id, updateInspectionCertDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.inspectionCertsService.remove(+id);
+    return this.inspectionCertsService.remove(id);
   }
 }

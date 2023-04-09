@@ -12,15 +12,15 @@ export class OwnersService {
     return `This action returns all owners`;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} owner`;
   }
 
-  update(id: number, updateOwnerDto: UpdateOwnerDto) {
+  update(id: string, updateOwnerDto: UpdateOwnerDto) {
     return `This action updates a #${id} owner`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} owner`;
   }
 }
