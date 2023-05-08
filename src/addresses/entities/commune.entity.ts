@@ -10,7 +10,7 @@ export class Commune {
   @Column({ type: 'varchar', length: 40 })
   name: string;
 
-  @Column({ name: 'district_code' })
+  @Column({ name: 'district_code', type: 'int' })
   @OneToOne(() => District)
   @JoinColumn()
   district: District;

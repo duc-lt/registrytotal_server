@@ -17,12 +17,12 @@ export class ServiceProvider {
   @Column({ unique: true })
   code: string;
 
-  @Column({ name: 'address_id' })
+  @Column({ name: 'address_id', type: 'uuid' })
   @OneToOne(() => Address)
   @JoinColumn()
   address: Address;
 
-  @Column({ name: 'account_id' })
+  @Column({ name: 'account_id', type: 'uuid' })
   @OneToOne(() => Account)
   @JoinColumn()
   account: Account;

@@ -1,37 +1,11 @@
 import { OwnerType } from '../owners/enums/owner-types.enum';
-import { Authority } from '../accounts/enums/authority.enum';
+import { Role } from '../accounts/enums/role.enum';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableName } from '../config/constants';
 import { CarUse } from '../cars/enums/car-uses.enum';
 
 export class Init1680950146051 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.createTable(
-      new Table({
-        name: TableName.ROLE,
-        columns: [
-          {
-            name: 'id',
-            type: 'varchar',
-            isGenerated: true,
-            generationStrategy: 'uuid',
-            isPrimary: true,
-          },
-          {
-            name: 'name',
-            type: 'enum',
-            enum: Object.values(Authority),
-          },
-          {
-            name: 'priority',
-            type: 'enum',
-            enum: ['1', '2'],
-          },
-        ],
-      }),
-      true,
-    );
-
     await queryRunner.createTable(
       new Table({
         name: TableName.ACCOUNT,
@@ -44,9 +18,10 @@ export class Init1680950146051 implements MigrationInterface {
             isPrimary: true,
           },
           {
-            name: 'role_id',
-            type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.ACCOUNT}_${TableName.ROLE}_id`,
+            name: 'role',
+            type: 'enum',
+            enum: Object.values(Role),
+            default: Role.SERVICE_PROVIDER,
           },
           {
             name: 'username',
@@ -57,12 +32,15 @@ export class Init1680950146051 implements MigrationInterface {
             name: 'password',
             type: 'text',
           },
-        ],
-        foreignKeys: [
           {
-            columnNames: ['role_id'],
-            referencedTableName: TableName.ROLE,
-            referencedColumnNames: ['id'],
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'CURRENT_TIMESTAMP',
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'CURRENT_TIMESTAMP',
           },
         ],
       }),
@@ -108,16 +86,16 @@ export class Init1680950146051 implements MigrationInterface {
           {
             name: 'province_code',
             type: 'int',
-            foreignKeyConstraintName: `fk_${TableName.DISTRICT}_${TableName.PROVINCE}_code`,
+            // foreignKeyConstraintName: `fk_${TableName.DISTRICT}_${TableName.PROVINCE}_code`,
           },
         ],
-        foreignKeys: [
-          {
-            columnNames: ['province_code'],
-            referencedTableName: TableName.PROVINCE,
-            referencedColumnNames: ['code'],
-          },
-        ],
+        // foreignKeys: [
+        //   {
+        //     columnNames: ['province_code'],
+        //     referencedTableName: TableName.PROVINCE,
+        //     referencedColumnNames: ['code'],
+        //   },
+        // ],
       }),
       true,
       true,
@@ -141,16 +119,16 @@ export class Init1680950146051 implements MigrationInterface {
           {
             name: 'district_code',
             type: 'int',
-            foreignKeyConstraintName: `fk_${TableName.COMMUNE}_${TableName.DISTRICT}_code`,
+            // foreignKeyConstraintName: `fk_${TableName.COMMUNE}_${TableName.DISTRICT}_code`,
           },
         ],
-        foreignKeys: [
-          {
-            columnNames: ['district_code'],
-            referencedTableName: TableName.DISTRICT,
-            referencedColumnNames: ['code'],
-          },
-        ],
+        // foreignKeys: [
+        //   {
+        //     columnNames: ['district_code'],
+        //     referencedTableName: TableName.DISTRICT,
+        //     referencedColumnNames: ['code'],
+        //   },
+        // ],
       }),
       true,
       true,
@@ -175,16 +153,16 @@ export class Init1680950146051 implements MigrationInterface {
           {
             name: 'commune_code',
             type: 'int',
-            foreignKeyConstraintName: `fk_${TableName.ADDRESS}_${TableName.COMMUNE}_code`,
+            // foreignKeyConstraintName: `fk_${TableName.ADDRESS}_${TableName.COMMUNE}_code`,
           },
         ],
-        foreignKeys: [
-          {
-            columnNames: ['commune_code'],
-            referencedTableName: TableName.COMMUNE,
-            referencedColumnNames: ['code'],
-          },
-        ],
+        // foreignKeys: [
+        //   {
+        //     columnNames: ['commune_code'],
+        //     referencedTableName: TableName.COMMUNE,
+        //     referencedColumnNames: ['code'],
+        //   },
+        // ],
       }),
       true,
       true,
@@ -209,26 +187,26 @@ export class Init1680950146051 implements MigrationInterface {
           {
             name: 'address_id',
             type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.SERVICE_PROVIDER}_${TableName.ADDRESS}_id`,
+            // foreignKeyConstraintName: `fk_${TableName.SERVICE_PROVIDER}_${TableName.ADDRESS}_id`,
           },
           {
             name: 'account_id',
             type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.SERVICE_PROVIDER}_${TableName.ACCOUNT}_id`,
+            // foreignKeyConstraintName: `fk_${TableName.SERVICE_PROVIDER}_${TableName.ACCOUNT}_id`,
           },
         ],
-        foreignKeys: [
-          {
-            columnNames: ['address_id'],
-            referencedTableName: TableName.ADDRESS,
-            referencedColumnNames: ['id'],
-          },
-          {
-            columnNames: ['account_id'],
-            referencedTableName: TableName.ACCOUNT,
-            referencedColumnNames: ['id'],
-          },
-        ],
+        // foreignKeys: [
+        //   {
+        //     columnNames: ['address_id'],
+        //     referencedTableName: TableName.ADDRESS,
+        //     referencedColumnNames: ['id'],
+        //   },
+        //   {
+        //     columnNames: ['account_id'],
+        //     referencedTableName: TableName.ACCOUNT,
+        //     referencedColumnNames: ['id'],
+        //   },
+        // ],
       }),
       true,
       true,
@@ -269,7 +247,7 @@ export class Init1680950146051 implements MigrationInterface {
           {
             name: 'owner_id',
             type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.PERSON}_${TableName.OWNER}_id`,
+            // foreignKeyConstraintName: `fk_${TableName.PERSON}_${TableName.OWNER}_id`,
           },
           {
             name: 'name',
@@ -283,7 +261,7 @@ export class Init1680950146051 implements MigrationInterface {
           {
             name: 'birthplace_id',
             type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.PERSON}_${TableName.ADDRESS}_id`,
+            // foreignKeyConstraintName: `fk_${TableName.PERSON}_${TableName.ADDRESS}_id`,
           },
           {
             name: 'identity_number',
@@ -291,18 +269,18 @@ export class Init1680950146051 implements MigrationInterface {
             length: '12',
           },
         ],
-        foreignKeys: [
-          {
-            columnNames: ['owner_id'],
-            referencedTableName: TableName.OWNER,
-            referencedColumnNames: ['id'],
-          },
-          {
-            columnNames: ['birthplace_id'],
-            referencedTableName: TableName.ADDRESS,
-            referencedColumnNames: ['id'],
-          },
-        ],
+        // foreignKeys: [
+        //   {
+        //     columnNames: ['owner_id'],
+        //     referencedTableName: TableName.OWNER,
+        //     referencedColumnNames: ['id'],
+        //   },
+        //   {
+        //     columnNames: ['birthplace_id'],
+        //     referencedTableName: TableName.ADDRESS,
+        //     referencedColumnNames: ['id'],
+        //   },
+        // ],
       }),
       true,
       true,
@@ -322,7 +300,7 @@ export class Init1680950146051 implements MigrationInterface {
           {
             name: 'owner_id',
             type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.ORGANISATION}_${TableName.OWNER}_id`,
+            // foreignKeyConstraintName: `fk_${TableName.ORGANISATION}_${TableName.OWNER}_id`,
           },
           {
             name: 'name',
@@ -332,21 +310,21 @@ export class Init1680950146051 implements MigrationInterface {
           {
             name: 'address_id',
             type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.ORGANISATION}_${TableName.ADDRESS}_id`,
+            // foreignKeyConstraintName: `fk_${TableName.ORGANISATION}_${TableName.ADDRESS}_id`,
           },
         ],
-        foreignKeys: [
-          {
-            columnNames: ['owner_id'],
-            referencedTableName: TableName.OWNER,
-            referencedColumnNames: ['id'],
-          },
-          {
-            columnNames: ['address_id'],
-            referencedTableName: TableName.ADDRESS,
-            referencedColumnNames: ['id'],
-          },
-        ],
+        // foreignKeys: [
+        //   {
+        //     columnNames: ['owner_id'],
+        //     referencedTableName: TableName.OWNER,
+        //     referencedColumnNames: ['id'],
+        //   },
+        //   {
+        //     columnNames: ['address_id'],
+        //     referencedTableName: TableName.ADDRESS,
+        //     referencedColumnNames: ['id'],
+        //   },
+        // ],
       }),
       true,
       true,
@@ -374,16 +352,16 @@ export class Init1680950146051 implements MigrationInterface {
           {
             name: 'registry_province_code',
             type: 'int',
-            foreignKeyConstraintName: `fk_${TableName.REGISTRATION_CERT}_${TableName.PROVINCE}_code`,
+            // foreignKeyConstraintName: `fk_${TableName.REGISTRATION_CERT}_${TableName.PROVINCE}_code`,
           },
         ],
-        foreignKeys: [
-          {
-            columnNames: ['registry_province_code'],
-            referencedTableName: TableName.PROVINCE,
-            referencedColumnNames: ['code'],
-          },
-        ],
+        // foreignKeys: [
+        //   {
+        //     columnNames: ['registry_province_code'],
+        //     referencedTableName: TableName.PROVINCE,
+        //     referencedColumnNames: ['code'],
+        //   },
+        // ],
       }),
       true,
       true,
@@ -410,22 +388,27 @@ export class Init1680950146051 implements MigrationInterface {
             default: 'CURRENT_TIMESTAMP',
           },
           {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'CURRENT_TIMESTAMP',
+          },
+          {
             name: 'expires_at',
             type: 'timestamp',
           },
           {
             name: 'provider_id',
             type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.INSPECTION_CERT}_${TableName.SERVICE_PROVIDER}_id`,
+            // foreignKeyConstraintName: `fk_${TableName.INSPECTION_CERT}_${TableName.SERVICE_PROVIDER}_id`,
           },
         ],
-        foreignKeys: [
-          {
-            columnNames: ['provider_id'],
-            referencedTableName: TableName.SERVICE_PROVIDER,
-            referencedColumnNames: ['id'],
-          },
-        ],
+        // foreignKeys: [
+        //   {
+        //     columnNames: ['provider_id'],
+        //     referencedTableName: TableName.SERVICE_PROVIDER,
+        //     referencedColumnNames: ['id'],
+        //   },
+        // ],
       }),
       true,
       true,
@@ -445,17 +428,17 @@ export class Init1680950146051 implements MigrationInterface {
           {
             name: 'owner_id',
             type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.CAR}_${TableName.OWNER}_id`,
+            // foreignKeyConstraintName: `fk_${TableName.CAR}_${TableName.OWNER}_id`,
           },
           {
             name: 'registration_cert_id',
             type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.CAR}_${TableName.REGISTRATION_CERT}_id`,
+            // foreignKeyConstraintName: `fk_${TableName.CAR}_${TableName.REGISTRATION_CERT}_id`,
           },
           {
             name: 'inspection_cert_id',
             type: 'varchar',
-            foreignKeyConstraintName: `fk_${TableName.CAR}_${TableName.INSPECTION_CERT}_id`,
+            // foreignKeyConstraintName: `fk_${TableName.CAR}_${TableName.INSPECTION_CERT}_id`,
             isNullable: true,
           },
           {
@@ -479,23 +462,23 @@ export class Init1680950146051 implements MigrationInterface {
             enum: Object.values(CarUse),
           },
         ],
-        foreignKeys: [
-          {
-            columnNames: ['owner_id'],
-            referencedTableName: TableName.OWNER,
-            referencedColumnNames: ['id'],
-          },
-          {
-            columnNames: ['registration_cert_id'],
-            referencedTableName: TableName.REGISTRATION_CERT,
-            referencedColumnNames: ['id'],
-          },
-          {
-            columnNames: ['inspection_cert_id'],
-            referencedTableName: TableName.INSPECTION_CERT,
-            referencedColumnNames: ['id'],
-          },
-        ],
+        // foreignKeys: [
+        //   {
+        //     columnNames: ['owner_id'],
+        //     referencedTableName: TableName.OWNER,
+        //     referencedColumnNames: ['id'],
+        //   },
+        //   {
+        //     columnNames: ['registration_cert_id'],
+        //     referencedTableName: TableName.REGISTRATION_CERT,
+        //     referencedColumnNames: ['id'],
+        //   },
+        //   {
+        //     columnNames: ['inspection_cert_id'],
+        //     referencedTableName: TableName.INSPECTION_CERT,
+        //     referencedColumnNames: ['id'],
+        //   },
+        // ],
       }),
       true,
       true,
@@ -515,6 +498,5 @@ export class Init1680950146051 implements MigrationInterface {
     await queryRunner.dropTable(TableName.DISTRICT, true, true);
     await queryRunner.dropTable(TableName.PROVINCE, true, true);
     await queryRunner.dropTable(TableName.ACCOUNT, false, true);
-    await queryRunner.dropTable(TableName.ROLE, false, true);
   }
 }

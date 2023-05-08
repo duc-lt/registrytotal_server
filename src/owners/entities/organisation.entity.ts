@@ -14,7 +14,7 @@ export class Organisation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'owner_id' })
+  @Column({ name: 'owner_id', type: 'uuid' })
   @OneToOne(() => Owner)
   @JoinColumn()
   owner: Owner;
@@ -22,7 +22,7 @@ export class Organisation {
   @Column({ type: 'varchar', length: 100 })
   name: string;
 
-  @Column({ name: 'address_id' })
+  @Column({ name: 'address_id', type: 'uuid' })
   @OneToOne(() => Address)
   @JoinColumn()
   address: Address;

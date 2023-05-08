@@ -14,7 +14,7 @@ export class Person {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'owner_id' })
+  @Column({ name: 'owner_id', type: 'uuid' })
   @OneToOne(() => Owner)
   @JoinColumn()
   owner: Owner;
@@ -25,7 +25,7 @@ export class Person {
   @Column({ type: 'date' })
   birthdate: Date;
 
-  @Column({ name: 'birthplace_id' })
+  @Column({ name: 'birthplace_id', type: 'uuid' })
   @OneToOne(() => Address)
   @JoinColumn()
   birthplace: Address;

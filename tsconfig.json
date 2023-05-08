@@ -17,7 +17,6 @@
       "@inspection-certs/*": ["src/inspection-certs/*"],
       "@owners/*": ["src/owners/*"],
       "@service-providers/*": ["src/service-providers/*"],
-      "@utils/*": ["src/utils/*"],
     },
     "incremental": true,
     "skipLibCheck": true,

@@ -16,17 +16,17 @@ export class Car {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'owner_id' })
+  @Column({ name: 'owner_id', type: 'uuid' })
   @OneToOne(() => Owner)
   @JoinColumn()
   owner: Owner;
 
-  @Column({ name: 'registration_cert_id' })
+  @Column({ name: 'registration_cert_id', type: 'uuid' })
   @OneToOne(() => RegistrationCert)
   @JoinColumn()
   registrationCert: RegistrationCert;
 
-  @Column({ name: 'inspection_cert_id', nullable: true })
+  @Column({ name: 'inspection_cert_id', nullable: true, type: 'uuid' })
   @OneToOne(() => InspectionCert)
   @JoinColumn()
   inspectionCert?: InspectionCert;

@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AddressesModule } from './addresses/addresses.module';
 import { OwnersModule } from './owners/owners.module';
 import { CarsModule } from './cars/cars.module';
@@ -10,6 +8,7 @@ import { InspectionCertsModule } from './inspection-certs/inspection-certs.modul
 import { ServiceProvidersModule } from './service-providers/service-providers.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -28,14 +27,11 @@ import { DataSource } from 'typeorm';
         return {
           type: 'mysql',
           host: configService.get('DB_HOST'),
-          port: +configService.get('DB_PORT'),
           username: configService.get('DB_USERNAME'),
           password: configService.get('DB_PASSWORD'),
           database: configService.get('DB_NAME'),
+          ssl: {},
           autoLoadEntities: true,
-          extra: {
-            charset: 'UTF8_GENERAL_CI',
-          },
         };
       },
       inject: [ConfigService],
@@ -44,8 +40,7 @@ import { DataSource } from 'typeorm';
         return dataSource;
       },
     }),
+    JwtModule.register({})
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

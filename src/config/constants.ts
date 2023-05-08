@@ -1,6 +1,5 @@
 export enum TableName {
   ACCOUNT = 'accounts',
-  ROLE = 'roles',
 
   ADDRESS = 'addresses',
   COMMUNE = 'communes',

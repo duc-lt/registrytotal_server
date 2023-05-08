@@ -10,7 +10,7 @@ export class District {
   @Column({ type: 'varchar', length: 40 })
   name: string;
 
-  @Column({ name: 'province_code' })
+  @Column({ name: 'province_code', type: 'int' })
   @OneToOne(() => Province)
   @JoinColumn()
   province: Province;

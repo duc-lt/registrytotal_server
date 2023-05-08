@@ -19,7 +19,7 @@ export class RegistrationCert {
   @Column({ name: 'registration_number', type: 'varchar' })
   registrationNumber: string;
 
-  @Column({ name: 'registry_province_code' })
+  @Column({ name: 'registry_province_code', type: 'int' })
   @OneToOne(() => Province)
   @JoinColumn()
   registryProvince: Province;

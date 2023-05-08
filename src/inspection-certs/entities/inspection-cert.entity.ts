@@ -2,10 +2,12 @@ import { ServiceProvider } from '@service-providers/entities/service-provider.en
 import { TableName } from 'src/config/constants';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: TableName.INSPECTION_CERT })
@@ -16,12 +18,11 @@ export class InspectionCert {
   @Column({ name: 'cert_number' })
   certNumber: string;
 
-  @Column({
-    name: 'created_at',
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 
   @Column({
     name: 'expires_at',
@@ -29,7 +30,7 @@ export class InspectionCert {
   })
   expiresAt: Date;
 
-  @Column({ name: 'provider_id' })
+  @Column({ name: 'provider_id', type: 'uuid' })
   @OneToOne(() => ServiceProvider)
   @JoinColumn()
   provider: ServiceProvider;
