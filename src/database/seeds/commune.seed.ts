@@ -1,4 +1,3 @@
-import { Commune } from '@addresses/entities/commune.entity';
 import { Seeder } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { TableName } from 'src/config/constants';
