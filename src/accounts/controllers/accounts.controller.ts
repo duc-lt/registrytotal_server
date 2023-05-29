@@ -11,7 +11,7 @@ import {
 import { AccountsService } from '../services/accounts.service';
 import { CreateAccountDto } from '../dto/create-account.dto';
 import { Role } from '@accounts/enums/role.enum';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from '@accounts/decorators/user.decorator';
 import { Account } from '@accounts/entities/account.entity';
 import { LocalAuthGuard } from '@accounts/guards/local-auth.guard';
@@ -21,7 +21,7 @@ import { HasRole } from '@accounts/decorators/role.decorator';
 import { LoginDto } from '@accounts/dto/login.dto';
 import { JwtAuthGuard } from '@accounts/guards/jwt-auth.guard';
 
-@ApiTags('[Account]')
+@ApiTags('[Account] Tài khoản')
 @Controller('accounts')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AccountsController {
@@ -31,6 +31,10 @@ export class AccountsController {
   ) {}
 
   @Post()
+  @ApiOperation({
+    description: 'Tạo tài khoản cho Trung tâm Đăng kiểm',
+    operationId: 'create',
+  })
   @ApiBody({ type: CreateAccountDto })
   @UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)
   @HasRole(Role.DEPARTMENT)
@@ -40,6 +44,10 @@ export class AccountsController {
   }
 
   @Post('login')
+  @ApiOperation({
+    description: 'Đăng nhập',
+    operationId: 'login',
+  })
   @ApiBody({ type: LoginDto })
   @UseGuards(LocalAuthGuard)
   async login(@User() user: Account) {
@@ -47,12 +55,26 @@ export class AccountsController {
   }
 
   @Get()
+  @ApiOperation({
+    description: 'Lấy danh sách tài khoản Trung tâm Đăng kiểm',
+    operationId: 'findAll',
+  })
+  @UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)
+  @HasRole(Role.DEPARTMENT)
+  @ApiBearerAuth()
   async findAll() {
-    return this.accountsService.findAll();
+    return this.accountsService.findAllProviders();
   }
 
   @Get(':id')
+  @ApiOperation({
+    description: 'Lấy thông tin tài khoản Trung tâm đăng kiểm',
+    operationId: 'findById',
+  })
+  @UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)
+  @HasRole(Role.DEPARTMENT)
+  @ApiBearerAuth()
   async findById(@Param('id') id: string) {
-    return this.accountsService.findById(id);
+    return this.accountsService.findProviderById(id);
   }
 }

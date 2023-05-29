@@ -16,8 +16,7 @@ export class Address {
   @Column({ name: 'street_address', type: 'varchar', length: 200 })
   streetAddress: string;
 
-  @Column({ name: 'commune_code', type: 'int' })
   @OneToOne(() => Commune)
-  @JoinColumn()
+  @JoinColumn({ name: 'commune_code' })
   commune: Commune;
 }

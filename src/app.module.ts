@@ -9,6 +9,7 @@ import { ServiceProvidersModule } from './service-providers/service-providers.mo
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { XlsxModule } from './xlsx/xlsx.module';
 
 @Module({
   imports: [
@@ -40,7 +41,8 @@ import { JwtModule } from '@nestjs/jwt';
         return dataSource;
       },
     }),
-    JwtModule.register({})
+    JwtModule.register({}),
+    XlsxModule,
   ],
 })
 export class AppModule {}

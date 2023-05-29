@@ -1,6 +1,8 @@
+import { Car } from '@cars/entities/car.entity';
 import { ServiceProvider } from '@service-providers/entities/service-provider.entity';
 import { TableName } from 'src/config/constants';
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -15,23 +17,29 @@ export class InspectionCert {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @OneToOne(() => Car, (car) => car.inspectionCert)
+  car: Car;
+
   @Column({ name: 'cert_number' })
   certNumber: string;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
   updatedAt: Date;
 
-  @Column({
-    name: 'expires_at',
-    type: 'timestamp',
-  })
+  @Column({ name: 'expires_at', type: 'timestamp' })
   expiresAt: Date;
 
-  @Column({ name: 'provider_id', type: 'uuid' })
   @OneToOne(() => ServiceProvider)
-  @JoinColumn()
+  @JoinColumn({ name: 'provider_id' })
   provider: ServiceProvider;
+
+  @BeforeInsert()
+  setExpiresAt() {
+    this.expiresAt = new Date(
+      this.createdAt.getTime() + 2 * 365 * 24 * 3600 * 1000,
+    );
+  }
 }

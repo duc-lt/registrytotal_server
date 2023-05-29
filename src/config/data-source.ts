@@ -1,9 +1,10 @@
 import { config } from 'dotenv';
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { SeederOptions } from 'typeorm-extension';
 
 config();
 
-const AppDataSource = new DataSource({
+const options: DataSourceOptions & SeederOptions = {
   type: 'mysql',
   host: process.env.DB_HOST,
   username: process.env.DB_USERNAME,
@@ -11,6 +12,9 @@ const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   ssl: {},
   migrations: ['src/**/migrations/*.ts'],
-});
+  seeds: ['**/database/seeds/**/*.js'],
+};
+
+const AppDataSource = new DataSource(options);
 
 export { AppDataSource };

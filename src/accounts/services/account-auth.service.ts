@@ -43,18 +43,10 @@ export class AccountAuthService {
       role: user.role,
     };
 
-    const accessToken = await this.jwtService.signAsync(
-      payload,
-      payload.role === Role.DEPARTMENT
-        ? {
-            expiresIn: this.configService.get('DEPARTMENT_ACCESS_EXPIRES'),
-            secret: this.configService.get('DEPARTMENT_ACCESS_KEY'),
-          }
-        : {
-            expiresIn: this.configService.get('PROVIDER_ACCESS_EXPIRES'),
-            secret: this.configService.get('PROVIDER_ACCESS_KEY'),
-          },
-    );
+    const accessToken = await this.jwtService.signAsync(payload, {
+      expiresIn: this.configService.get('ACCESS_EXPIRES'),
+      secret: this.configService.get('ACCESS_KEY'),
+    });
     return {
       ...payload,
       accessToken,

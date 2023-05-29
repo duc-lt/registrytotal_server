@@ -14,16 +14,10 @@ export class Organisation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'owner_id', type: 'uuid' })
   @OneToOne(() => Owner)
-  @JoinColumn()
+  @JoinColumn({ name: 'owner_id' })
   owner: Owner;
 
-  @Column({ type: 'varchar', length: 100 })
-  name: string;
-
-  @Column({ name: 'address_id', type: 'uuid' })
-  @OneToOne(() => Address)
-  @JoinColumn()
-  address: Address;
+  @Column({ type: 'varchar', length: 20, name: 'tax_id' })
+  taxId: string;
 }

@@ -17,13 +17,11 @@ export class ServiceProvider {
   @Column({ unique: true })
   code: string;
 
-  @Column({ name: 'address_id', type: 'uuid' })
   @OneToOne(() => Address)
-  @JoinColumn()
+  @JoinColumn({ name: 'address_id' })
   address: Address;
 
-  @Column({ name: 'account_id', type: 'uuid' })
-  @OneToOne(() => Account)
-  @JoinColumn()
+  @OneToOne(() => Account, (account) => account.provider)
+  @JoinColumn({ name: 'account_id' })
   account: Account;
 }

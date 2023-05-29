@@ -7,11 +7,15 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Car } from './car.entity';
 
 @Entity({ name: TableName.REGISTRATION_CERT })
 export class RegistrationCert {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @OneToOne(() => Car, (car) => car.registrationCert)
+  car: Car;
 
   @Column({ name: 'cert_number', type: 'varchar' })
   certNumber: string;
@@ -19,8 +23,10 @@ export class RegistrationCert {
   @Column({ name: 'registration_number', type: 'varchar' })
   registrationNumber: string;
 
-  @Column({ name: 'registry_province_code', type: 'int' })
   @OneToOne(() => Province)
-  @JoinColumn()
+  @JoinColumn({ name: 'registry_province_code' })
   registryProvince: Province;
+
+  @Column({ name: 'created_at', type: Date })
+  createdAt: Date;
 }

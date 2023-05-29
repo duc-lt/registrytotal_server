@@ -14,21 +14,9 @@ export class Person {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'owner_id', type: 'uuid' })
   @OneToOne(() => Owner)
-  @JoinColumn()
+  @JoinColumn({ name: 'owner_id' })
   owner: Owner;
-
-  @Column({ type: 'varchar', length: 30 })
-  name: string;
-
-  @Column({ type: 'date' })
-  birthdate: Date;
-
-  @Column({ name: 'birthplace_id', type: 'uuid' })
-  @OneToOne(() => Address)
-  @JoinColumn()
-  birthplace: Address;
 
   @Column({
     name: 'identity_number',

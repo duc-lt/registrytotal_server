@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -16,19 +17,16 @@ export class Car {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'owner_id', type: 'uuid' })
-  @OneToOne(() => Owner)
-  @JoinColumn()
+  @ManyToOne(() => Owner, (owner) => owner.cars)
+  @JoinColumn({ name: 'owner_id' })
   owner: Owner;
 
-  @Column({ name: 'registration_cert_id', type: 'uuid' })
-  @OneToOne(() => RegistrationCert)
-  @JoinColumn()
+  @OneToOne(() => RegistrationCert, (cert) => cert.car)
+  @JoinColumn({ name: 'registration_cert_id' })
   registrationCert: RegistrationCert;
 
-  @Column({ name: 'inspection_cert_id', nullable: true, type: 'uuid' })
-  @OneToOne(() => InspectionCert)
-  @JoinColumn()
+  @OneToOne(() => InspectionCert, (cert) => cert.car)
+  @JoinColumn({ name: 'inspection_cert_id' })
   inspectionCert?: InspectionCert;
 
   @Column({ type: 'varchar', length: 30 })

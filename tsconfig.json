@@ -17,6 +17,7 @@
       "@inspection-certs/*": ["src/inspection-certs/*"],
       "@owners/*": ["src/owners/*"],
       "@service-providers/*": ["src/service-providers/*"],
+      "@xlsx/*": ["src/xlsx/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

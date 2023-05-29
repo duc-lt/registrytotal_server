@@ -21,7 +21,7 @@ export class Init1680950146051 implements MigrationInterface {
             name: 'role',
             type: 'enum',
             enum: Object.values(Role),
-            default: Role.SERVICE_PROVIDER,
+            default: `'${Role.SERVICE_PROVIDER}'`,
           },
           {
             name: 'username',
@@ -228,6 +228,15 @@ export class Init1680950146051 implements MigrationInterface {
             type: 'enum',
             enum: Object.values(OwnerType),
           },
+          {
+            name: 'name',
+            type: 'varchar',
+            length: '100',
+          },
+          {
+            name: 'address_id',
+            type: 'varchar',
+          },
         ],
       }),
       true,
@@ -248,20 +257,6 @@ export class Init1680950146051 implements MigrationInterface {
             name: 'owner_id',
             type: 'varchar',
             // foreignKeyConstraintName: `fk_${TableName.PERSON}_${TableName.OWNER}_id`,
-          },
-          {
-            name: 'name',
-            type: 'varchar',
-            length: '30',
-          },
-          {
-            name: 'birthdate',
-            type: 'date',
-          },
-          {
-            name: 'birthplace_id',
-            type: 'varchar',
-            // foreignKeyConstraintName: `fk_${TableName.PERSON}_${TableName.ADDRESS}_id`,
           },
           {
             name: 'identity_number',
@@ -303,14 +298,8 @@ export class Init1680950146051 implements MigrationInterface {
             // foreignKeyConstraintName: `fk_${TableName.ORGANISATION}_${TableName.OWNER}_id`,
           },
           {
-            name: 'name',
+            name: 'tax_id',
             type: 'varchar',
-            length: '100',
-          },
-          {
-            name: 'address_id',
-            type: 'varchar',
-            // foreignKeyConstraintName: `fk_${TableName.ORGANISATION}_${TableName.ADDRESS}_id`,
           },
         ],
         // foreignKeys: [
@@ -353,6 +342,10 @@ export class Init1680950146051 implements MigrationInterface {
             name: 'registry_province_code',
             type: 'int',
             // foreignKeyConstraintName: `fk_${TableName.REGISTRATION_CERT}_${TableName.PROVINCE}_code`,
+          },
+          {
+            name: 'created_at',
+            type: 'date',
           },
         ],
         // foreignKeys: [

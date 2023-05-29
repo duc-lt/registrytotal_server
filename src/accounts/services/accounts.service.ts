@@ -26,24 +26,30 @@ export class AccountsService {
     });
 
     return this.accountRepository.save(account);
-
-    // return this.accountRepository.insert({
-    //   username,
-    //   password: username.toLowerCase(),
-    //   role: Role.SERVICE_PROVIDER,
-    // });
   }
 
-  async findAll() {
+  async findAllProviders() {
     return this.accountRepository.find({
+      relations: {
+        provider: true,
+      },
       where: { role: Role.SERVICE_PROVIDER },
     });
   }
 
-  async findById(id: string) {
-    return this.accountRepository.findOneBy({
-      role: Role.SERVICE_PROVIDER,
-      id,
+  async findProviderById(id: string) {
+    return this.accountRepository.findOne({
+      relations: {
+        provider: true,
+      },
+      where: {
+        role: Role.SERVICE_PROVIDER,
+        id,
+      },
     });
+  }
+
+  async findDepartment(id: string) {
+    return this.accountRepository.findOneBy({ id, role: Role.DEPARTMENT });
   }
 }

@@ -6,6 +6,8 @@ export enum TableName {
   DISTRICT = 'districts',
   PROVINCE = 'provinces',
 
+  FILE = 'files',
+
   CAR = 'cars',
   REGISTRATION_CERT = 'registration_certs',
   INSPECTION_CERT = 'inspection_certs',
