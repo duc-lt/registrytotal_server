@@ -22,11 +22,9 @@ export class Car {
   owner: Owner;
 
   @OneToOne(() => RegistrationCert, (cert) => cert.car)
-  @JoinColumn({ name: 'registration_cert_id' })
   registrationCert: RegistrationCert;
 
   @OneToOne(() => InspectionCert, (cert) => cert.car)
-  @JoinColumn({ name: 'inspection_cert_id' })
   inspectionCert?: InspectionCert;
 
   @Column({ type: 'varchar', length: 30 })

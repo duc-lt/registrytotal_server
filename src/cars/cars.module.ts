@@ -5,9 +5,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Car } from './entities/car.entity';
 import { RegistrationCert } from './entities/registration-cert.entity';
 import { XlsxModule } from 'src/xlsx/xlsx.module';
+import { AddressesModule } from '@addresses/addresses.module';
+import { OwnersModule } from '@owners/owners.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Car, RegistrationCert]), XlsxModule],
+  imports: [
+    TypeOrmModule.forFeature([Car, RegistrationCert]),
+    XlsxModule,
+    AddressesModule,
+    OwnersModule,
+  ],
   controllers: [CarsController],
   providers: [CarsService],
 })

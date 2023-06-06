@@ -5,7 +5,12 @@ export type CarsXlsxRow = {
   owner: {
     name: string;
     identityNumber?: string;
-    address: string;
+    address: {
+      streetAddress: string;
+      communeCode: number;
+      districtCode: number;
+      provinceCode: number;
+    };
     taxId?: string;
   };
   specs: {
@@ -17,13 +22,13 @@ export type CarsXlsxRow = {
     certNumber: string;
     createdAt: Date;
     registrationNumber: string;
-    registryProvince: string;
+    registryProvinceCode: number;
   };
   usedFor: CarUse;
-  inspectionInfo: {
-    certNumber: string;
-    createdAt: Date;
-    expiresAt: Date;
-    serviceProvider: string;
-  };
+  // inspectionInfo: {
+  //   certNumber: string;
+  //   createdAt: Date;
+  //   expiresAt: Date;
+  //   serviceProvider: string;
+  // };
 };

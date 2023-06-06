@@ -1,36 +1,68 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateCarDto } from '../dto/create-car.dto';
 import { UpdateCarDto } from '../dto/update-car.dto';
 import { XlsxService } from 'src/xlsx/services/xlsx.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Car } from '@cars/entities/car.entity';
 import { CarRepository } from '@cars/repositories/car.repository';
+import { Owner } from '@owners/entities/owner.entity';
+import { OwnerRepository } from '@owners/repositories/owner.repository';
+import { Person } from '@owners/entities/person.entity';
+import { AddressesService } from '@addresses/services/addresses.service';
+import { OwnersService } from '@owners/services/owners.service';
+import { RegistrationCert } from '@cars/entities/registration-cert.entity';
+import { RegistrationCertRepository } from '@cars/repositories/registration-cert.repository';
+import { Province } from '@addresses/entities/province.entity';
 
 @Injectable()
 export class CarsService {
   constructor(
     private readonly xlsxService: XlsxService,
+    private readonly addressesService: AddressesService,
+    private readonly ownersService: OwnersService,
     @InjectRepository(Car) private readonly carRepository: CarRepository,
+    @InjectRepository(RegistrationCert)
+    private readonly registrationCertRepository: RegistrationCertRepository,
   ) {}
 
   async create(path: string) {
     const rows = await this.xlsxService.read(path);
-    const cars = await Promise.all(rows.map(async (row) => {
-      const {
-        owner,
-        specs: { maker, model, version },
-        registrationInfo: {
+    return Promise.all(
+      rows.map(async (row) => {
+        const {
+          owner,
+          specs: { maker, model, version },
+          usedFor,
+          registrationInfo: {
+            certNumber,
+            createdAt,
+            registrationNumber,
+            registryProvinceCode,
+          },
+        } = row;
+
+        const newOwner = await this.ownersService.create(owner);
+
+        const car = this.carRepository.create({
+          owner: newOwner,
+          maker,
+          model,
+          version,
+          usedFor,
+        });
+        const newCar = await this.carRepository.save(car);
+
+        const registrationCert = this.registrationCertRepository.create({
+          car: newCar,
           certNumber,
           createdAt,
           registrationNumber,
-          registryProvince,
-        },
-      } = row;
+          registryProvince: { code: registryProvinceCode },
+        });
 
-      const car = this.carRepository.create();
-      return car;
-    }));
-
+        this.registrationCertRepository.save(registrationCert);
+      }),
+    );
   }
 
   findAll() {

@@ -31,8 +31,8 @@ export class CarsController {
   @Post('upload')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UploadCarsFromFileDto })
-  // @UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)
-  // @HasRole(Role.DEPARTMENT)
+  @UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)
+  @HasRole(Role.DEPARTMENT)
   @UseInterceptors(FileInterceptor('file', fileConfig))
   async create(@UploadedFile() file: Express.Multer.File) {
     return this.carsService.create(file.path);

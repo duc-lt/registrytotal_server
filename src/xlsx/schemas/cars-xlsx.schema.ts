@@ -20,7 +20,24 @@ export const carsXlsxSchema: XlsxSchema = {
       },
       'Địa chỉ': {
         prop: 'address',
-        type: String,
+        type: {
+          'Địa chỉ': {
+            prop: 'streetAddress',
+            type: String,
+          },
+          'Mã tỉnh/thành': {
+            prop: 'provinceCode',
+            type: Number,
+          },
+          'Mã quận/huyện': {
+            prop: 'districtCode',
+            type: Number,
+          },
+          'Mã xã/phường': {
+            prop: 'communeCode',
+            type: Number,
+          },
+        },
       },
       'Mã số thuế': {
         prop: 'taxId',
@@ -61,9 +78,9 @@ export const carsXlsxSchema: XlsxSchema = {
         prop: 'registrationNumber',
         type: String,
       },
-      'Tỉnh/thành đăng ký xe': {
-        prop: 'registryProvince',
-        type: String,
+      'Mã tỉnh/thành đăng ký xe': {
+        prop: 'registryProvinceCode',
+        type: Number,
       },
     },
   },
@@ -72,25 +89,25 @@ export const carsXlsxSchema: XlsxSchema = {
     type: String,
     oneOf: Object.values(CarUse),
   },
-  'Thông tin đăng kiểm xe': {
-    prop: 'inspectionInfo',
-    type: {
-      'Mã số đăng kiểm xe': {
-        prop: 'certNumber',
-        type: String,
-      },
-      'Ngày cấp': {
-        prop: 'createdAt',
-        type: Date,
-      },
-      'Ngày hết hạn': {
-        prop: 'expiresAt',
-        type: Date,
-      },
-      'Mã trung tâm đăng kiểm': {
-        prop: 'serviceProvider',
-        type: String,
-      },
-    },
-  },
+  // 'Thông tin đăng kiểm xe': {
+  //   prop: 'inspectionInfo',
+  //   type: {
+  //     'Mã số đăng kiểm xe': {
+  //       prop: 'certNumber',
+  //       type: String,
+  //     },
+  //     'Ngày cấp': {
+  //       prop: 'createdAt',
+  //       type: Date,
+  //     },
+  //     'Ngày hết hạn': {
+  //       prop: 'expiresAt',
+  //       type: Date,
+  //     },
+  //     'Mã trung tâm đăng kiểm': {
+  //       prop: 'serviceProvider',
+  //       type: String,
+  //     },
+  //   },
+  // },
 };

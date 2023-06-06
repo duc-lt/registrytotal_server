@@ -321,6 +321,48 @@ export class Init1680950146051 implements MigrationInterface {
 
     await queryRunner.createTable(
       new Table({
+        name: TableName.CAR,
+        columns: [
+          {
+            name: 'id',
+            type: 'varchar',
+            isPrimary: true,
+            isGenerated: true,
+            generationStrategy: 'uuid',
+          },
+          {
+            name: 'owner_id',
+            type: 'varchar',
+            // foreignKeyConstraintName: `fk_${TableName.CAR}_${TableName.OWNER}_id`,
+          },
+          {
+            name: 'maker',
+            type: 'varchar',
+            length: '30',
+          },
+          {
+            name: 'model',
+            type: 'varchar',
+            length: '30',
+          },
+          {
+            name: 'version',
+            type: 'varchar',
+            length: '30',
+          },
+          {
+            name: 'used_for',
+            type: 'enum',
+            enum: Object.values(CarUse),
+          },
+        ],
+      }),
+      true,
+      true,
+    );
+
+    await queryRunner.createTable(
+      new Table({
         name: TableName.REGISTRATION_CERT,
         columns: [
           {
@@ -329,6 +371,10 @@ export class Init1680950146051 implements MigrationInterface {
             isPrimary: true,
             isGenerated: true,
             generationStrategy: 'uuid',
+          },
+          {
+            name: 'car_id',
+            type: 'varchar',
           },
           {
             name: 'cert_number',
@@ -372,6 +418,10 @@ export class Init1680950146051 implements MigrationInterface {
             generationStrategy: 'uuid',
           },
           {
+            name: 'car_id',
+            type: 'varchar',
+          },
+          {
             name: 'cert_number',
             type: 'varchar',
           },
@@ -399,76 +449,6 @@ export class Init1680950146051 implements MigrationInterface {
         //   {
         //     columnNames: ['provider_id'],
         //     referencedTableName: TableName.SERVICE_PROVIDER,
-        //     referencedColumnNames: ['id'],
-        //   },
-        // ],
-      }),
-      true,
-      true,
-    );
-
-    await queryRunner.createTable(
-      new Table({
-        name: TableName.CAR,
-        columns: [
-          {
-            name: 'id',
-            type: 'varchar',
-            isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'uuid',
-          },
-          {
-            name: 'owner_id',
-            type: 'varchar',
-            // foreignKeyConstraintName: `fk_${TableName.CAR}_${TableName.OWNER}_id`,
-          },
-          {
-            name: 'registration_cert_id',
-            type: 'varchar',
-            // foreignKeyConstraintName: `fk_${TableName.CAR}_${TableName.REGISTRATION_CERT}_id`,
-          },
-          {
-            name: 'inspection_cert_id',
-            type: 'varchar',
-            // foreignKeyConstraintName: `fk_${TableName.CAR}_${TableName.INSPECTION_CERT}_id`,
-            isNullable: true,
-          },
-          {
-            name: 'maker',
-            type: 'varchar',
-            length: '30',
-          },
-          {
-            name: 'model',
-            type: 'varchar',
-            length: '30',
-          },
-          {
-            name: 'version',
-            type: 'varchar',
-            length: '30',
-          },
-          {
-            name: 'used_for',
-            type: 'enum',
-            enum: Object.values(CarUse),
-          },
-        ],
-        // foreignKeys: [
-        //   {
-        //     columnNames: ['owner_id'],
-        //     referencedTableName: TableName.OWNER,
-        //     referencedColumnNames: ['id'],
-        //   },
-        //   {
-        //     columnNames: ['registration_cert_id'],
-        //     referencedTableName: TableName.REGISTRATION_CERT,
-        //     referencedColumnNames: ['id'],
-        //   },
-        //   {
-        //     columnNames: ['inspection_cert_id'],
-        //     referencedTableName: TableName.INSPECTION_CERT,
         //     referencedColumnNames: ['id'],
         //   },
         // ],

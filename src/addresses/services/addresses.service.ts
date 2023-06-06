@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateAddressDto } from '../dto/create-address.dto';
 import { UpdateAddressDto } from '../dto/update-address.dto';
 import { AddressRepository } from '@addresses/repositories/address.repository';
@@ -24,7 +24,61 @@ export class AddressesService {
     private readonly communeRepository: CommuneRepository,
   ) {}
 
+  async create(newAddress: {
+    streetAddress: string;
+    communeCode: number;
+    districtCode: number;
+    provinceCode: number;
+  }) {
+    const { streetAddress, communeCode, districtCode, provinceCode } =
+      newAddress;
+    const isValidAddress = await this.checkValidAddress(
+      communeCode,
+      districtCode,
+      provinceCode,
+    );
+    if (!isValidAddress) {
+      throw new ForbiddenException('Địa chỉ không hợp lệ');
+    }
+
+    const address = this.addressRepository.create({
+      streetAddress,
+      commune: { code: communeCode },
+    });
+
+    return this.addressRepository.save(address);
+  }
+
   async findProvinceByName(name: string) {
     return this.provinceRepository.findOneBy({ name });
+  }
+
+  async checkValidAddress(
+    communeCode: number,
+    districtCode: number,
+    provinceCode: number,
+  ) {
+    const address = await this.addressRepository.findOne({
+      relations: {
+        commune: {
+          district: {
+            province: true,
+          },
+        },
+      },
+      where: {
+        commune: {
+          code: communeCode,
+          district: {
+            code: districtCode,
+            province: {
+              code: provinceCode,
+            },
+          },
+        },
+      },
+    });
+
+    return !!address;
   }
 }

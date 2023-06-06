@@ -18,6 +18,7 @@ export class InspectionCert {
   id: string;
 
   @OneToOne(() => Car, (car) => car.inspectionCert)
+  @JoinColumn({ name: 'car_id' })
   car: Car;
 
   @Column({ name: 'cert_number' })
