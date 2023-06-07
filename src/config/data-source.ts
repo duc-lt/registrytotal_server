@@ -13,6 +13,8 @@ const options: DataSourceOptions & SeederOptions = {
   ssl: {},
   migrations: ['src/**/migrations/*.ts'],
   seeds: ['**/database/seeds/**/*.js'],
+  factories: ['**/database/factories/**/*.js'],
+  entities: ['**/entities/**/*.entity.js'],
 };
 
 const AppDataSource = new DataSource(options);

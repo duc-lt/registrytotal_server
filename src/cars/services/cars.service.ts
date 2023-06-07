@@ -65,6 +65,25 @@ export class CarsService {
     );
   }
 
+  async searchByRegistrationNumber(certNumber: string) {
+    return this.carRepository.findOne({
+      relations: {
+        registrationCert: true,
+        inspectionCert: true,
+        owner: {
+          address: true,
+        },
+      },
+      where: [
+        {
+          registrationCert: {
+            certNumber: certNumber,
+          },
+        },
+      ],
+    });
+  }
+
   findAll() {
     return `This action returns all cars`;
   }
