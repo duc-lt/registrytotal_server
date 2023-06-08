@@ -10,12 +10,14 @@ export default class AddressSeeder implements Seeder {
     const communeRepository = dataSource.getRepository(Commune);
     const communesCount = await communeRepository.count();
     const addresses = addressRepository.create(
-      Array(200).map((_) => ({
-        streetAddress: faker.address.streetAddress(),
-        commune: {
-          code: Math.round(Math.random() * communesCount + 1),
-        },
-      })),
+      Array(50)
+        .fill(null)
+        .map((_) => ({
+          streetAddress: faker.address.streetAddress(),
+          commune: {
+            code: Math.round(Math.random() * communesCount + 1),
+          },
+        })),
     );
 
     await addressRepository.save(addresses);

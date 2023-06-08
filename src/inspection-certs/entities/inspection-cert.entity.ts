@@ -2,7 +2,7 @@ import { Car } from '@cars/entities/car.entity';
 import { ServiceProvider } from '@service-providers/entities/service-provider.entity';
 import { TableName } from 'src/config/constants';
 import {
-  BeforeInsert,
+  AfterInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -37,7 +37,7 @@ export class InspectionCert {
   @JoinColumn({ name: 'provider_id' })
   provider: ServiceProvider;
 
-  @BeforeInsert()
+  @AfterInsert()
   setExpiresAt() {
     this.expiresAt = new Date(
       this.createdAt.getTime() + 2 * 365 * 24 * 3600 * 1000,

@@ -14,11 +14,13 @@ export default class AccountSeeder implements Seeder {
         username: 'cucdangkiem',
         password: '123456',
       },
-      ...Array(20).map((_) => ({
-        role: Role.SERVICE_PROVIDER,
-        username: createRandomString(5),
-        password: '123456',
-      })),
+      ...Array(20)
+        .fill(null)
+        .map((_) => ({
+          role: Role.SERVICE_PROVIDER,
+          username: createRandomString(5),
+          password: '123456',
+        })),
     ]);
 
     await accountRepository.save(accounts);

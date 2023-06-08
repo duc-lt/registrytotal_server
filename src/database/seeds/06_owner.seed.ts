@@ -2,6 +2,7 @@ import { Address } from '@addresses/entities/address.entity';
 import { faker } from '@faker-js/faker';
 import { Owner } from '@owners/entities/owner.entity';
 import { OwnerType } from '@owners/enums/owner-types.enum';
+import { getRandomEnumValue } from 'src/utils';
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 
@@ -14,11 +15,10 @@ export default class OwnerSeeder implements Seeder {
       skip: 20,
       take: 100,
     });
-    const ownerTypes = Object.values(OwnerType);
     const owners = ownerRepository.create(
       addresses.map((address) => {
         const owner = ownerRepository.create({
-          type: ownerTypes[Math.floor(Math.random() * ownerTypes.length)],
+          type: getRandomEnumValue(OwnerType),
           address: {
             id: address.id,
           },

@@ -15,6 +15,7 @@ const options: DataSourceOptions & SeederOptions = {
   seeds: ['**/database/seeds/**/*.js'],
   factories: ['**/database/factories/**/*.js'],
   entities: ['**/entities/**/*.entity.js'],
+  parallelExecution: false,
 };
 
 const AppDataSource = new DataSource(options);
