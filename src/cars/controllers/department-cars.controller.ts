@@ -14,14 +14,26 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { fileConfig } from '@xlsx/configs/file.config';
 
+@ApiTags('[Cục đăng kiểm][Car] Ô tô')
 @Controller('department/cars')
 export class DepartmentCarsController {
   constructor(private readonly carsService: CarsService) {}
 
   @Post('upload')
+  @ApiOperation({
+    summary: 'Upload file để tạo CSDL phương tiện đã qua đăng ký',
+    operationId: 'create',
+  })
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UploadCarsFromFileDto })
@@ -32,16 +44,15 @@ export class DepartmentCarsController {
     return this.carsService.create(file.path);
   }
 
-  @Get('/search')
-  @ApiBearerAuth()
-  @ApiQuery({
-    name: 'certnum',
-    description: 'Biển số xe',
-    required: true,
+  @Get()
+  @ApiOperation({
+    summary: 'Lấy danh sách ô tô',
+    operationId: 'findAll',
   })
-  @UseGuards(JwtAuthGuard(Role.SERVICE_PROVIDER), RolesGuard)
-  @HasRole(Role.SERVICE_PROVIDER)
-  async searchByRegistrationNumber(@Query('certnum') certNumber: string) {
-    return this.carsService.searchByRegistrationNumber(certNumber);
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)
+  @HasRole(Role.DEPARTMENT)
+  async findAll() {
+    return this.carsService.findAll();
   }
 }

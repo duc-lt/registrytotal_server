@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AccountsService } from './services/accounts.service';
-import { AccountsController } from './controllers/accounts.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
 import { JwtModule } from '@nestjs/jwt';
@@ -11,6 +10,8 @@ import { ConfigModule } from '@nestjs/config';
 import { Role } from './enums/role.enum';
 import { JwtAuthStrategy } from './strategies/jwt-auth.strategy';
 import { ServiceProvider } from '@service-providers/entities/service-provider.entity';
+import { DepartmentAccountsController } from './controllers/department-accounts.controller';
+import { ProviderAccountsController } from './controllers/provider-accounts.controller';
 
 @Module({
   imports: [
@@ -18,10 +19,10 @@ import { ServiceProvider } from '@service-providers/entities/service-provider.en
     JwtModule,
     ConfigModule.forRoot(),
   ],
-  controllers: [AccountsController],
+  controllers: [DepartmentAccountsController, ProviderAccountsController],
   providers: [
     ...Object.values(Role).map((role) => JwtAuthStrategy(role)),
-    LocalAuthStrategy,
+    ...Object.values(Role).map((role) => LocalAuthStrategy(role)),
     AccountRepository,
     AccountsService,
     AccountAuthService,

@@ -16,10 +16,7 @@ import { ProviderCarsController } from './controllers/provider-cars.controller';
     AddressesModule,
     OwnersModule,
   ],
-  controllers: [
-    DepartmentCarsController,
-    ProviderCarsController,
-  ],
+  controllers: [DepartmentCarsController, ProviderCarsController],
   providers: [CarsService],
 })
 export class CarsModule {}

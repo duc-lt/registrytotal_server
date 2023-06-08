@@ -1,30 +1,19 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  UseGuards,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-} from '@nestjs/common';
-import { AccountsService } from '../services/accounts.service';
-import { CreateAccountDto } from '../dto/create-account.dto';
-import { Role } from '@accounts/enums/role.enum';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from '@accounts/decorators/user.decorator';
-import { Account } from '@accounts/entities/account.entity';
-import { LocalAuthGuard } from '@accounts/guards/local-auth.guard';
-import { AccountAuthService } from '@accounts/services/account-auth.service';
-import { RolesGuard } from '@accounts/guards/roles.guard';
 import { HasRole } from '@accounts/decorators/role.decorator';
-import { LoginDto } from '@accounts/dto/login.dto';
+import { User } from '@accounts/decorators/user.decorator';
+import { CreateAccountDto, LoginDto } from '@accounts/dto';
+import { Account } from '@accounts/entities/account.entity';
+import { Role } from '@accounts/enums/role.enum';
 import { JwtAuthGuard } from '@accounts/guards/jwt-auth.guard';
+import { LocalAuthGuard } from '@accounts/guards/local-auth.guard';
+import { RolesGuard } from '@accounts/guards/roles.guard';
+import { AccountAuthService } from '@accounts/services/account-auth.service';
+import { AccountsService } from '@accounts/services/accounts.service';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('[Account] Tài khoản')
-@Controller('accounts')
-@UseInterceptors(ClassSerializerInterceptor)
-export class AccountsController {
+@ApiTags('[Cục đăng kiểm][Account] Tài khoản')
+@Controller('department/accounts')
+export class DepartmentAccountsController {
   constructor(
     private readonly accountsService: AccountsService,
     private readonly accountAuthService: AccountAuthService,
@@ -32,7 +21,7 @@ export class AccountsController {
 
   @Post()
   @ApiOperation({
-    description: 'Tạo tài khoản cho Trung tâm Đăng kiểm',
+    summary: 'Tạo tài khoản cho Trung tâm đăng kiểm',
     operationId: 'create',
   })
   @ApiBody({ type: CreateAccountDto })
@@ -45,18 +34,18 @@ export class AccountsController {
 
   @Post('login')
   @ApiOperation({
-    description: 'Đăng nhập',
+    summary: 'Đăng nhập tài khoản Cục đăng kiểm',
     operationId: 'login',
   })
   @ApiBody({ type: LoginDto })
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard(Role.DEPARTMENT))
   async login(@User() user: Account) {
     return this.accountAuthService.login(user);
   }
 
   @Get()
   @ApiOperation({
-    description: 'Lấy danh sách tài khoản Trung tâm Đăng kiểm',
+    summary: 'Lấy danh sách tài khoản Trung tâm đăng kiểm',
     operationId: 'findAll',
   })
   @UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)
@@ -68,7 +57,7 @@ export class AccountsController {
 
   @Get(':id')
   @ApiOperation({
-    description: 'Lấy thông tin tài khoản Trung tâm đăng kiểm',
+    summary: 'Lấy thông tin tài khoản Trung tâm đăng kiểm',
     operationId: 'findById',
   })
   @UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)

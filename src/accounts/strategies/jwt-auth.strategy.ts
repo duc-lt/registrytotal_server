@@ -29,11 +29,10 @@ export function JwtAuthStrategy(role?: Role) {
 
     async validate(payload: JwtPayload) {
       const account = role
-        ? await this.accountsService.findById(payload.id)
-        : role === Role.SERVICE_PROVIDER
-        ? await this.accountsService.findProviderById(payload.id)
-        : await this.accountsService.findDepartment(payload.id);
-
+        ? role === Role.SERVICE_PROVIDER
+          ? await this.accountsService.findProviderById(payload.id)
+          : await this.accountsService.findDepartment(payload.id)
+        : await this.accountsService.findById(payload.id);
       if (!account) {
         throw new UnauthorizedException();
       }

@@ -14,7 +14,7 @@ export default class AccountSeeder implements Seeder {
         username: 'cucdangkiem',
         password: '123456',
       },
-      ...Array(20)
+      ...Array(40)
         .fill(null)
         .map((_) => ({
           role: Role.SERVICE_PROVIDER,

@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InspectionCertRepository } from '@inspection-certs/repositories/inspection-certs.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InspectionCert } from '@inspection-certs/entities/inspection-cert.entity';
-import {
-  FilterAreaUnit,
-  FilterLevel,
-  FilterTimeUnit,
-} from '@inspection-certs/enums/filters.enum';
-import { FilterData, FilterTime } from '@inspection-certs/types/filter.type';
-import { CarRepository } from '@cars/repositories/car.repository';
-import { Car } from '@cars/entities/car.entity';
-import { Raw } from 'typeorm';
+// import {
+//   FilterAreaUnit,
+//   FilterLevel,
+//   FilterTimeUnit,
+// } from '@inspection-certs/enums/filters.enum';
+// import { FilterData, FilterTime } from '@inspection-certs/types/filter.type';
+// import { CarRepository } from '@cars/repositories/car.repository';
+// import { Car } from '@cars/entities/car.entity';
+// import { Raw } from 'typeorm';
 import { CreateInspectionCertDto } from '@inspection-certs/dto/create-inspection-cert.dto';
 import { createRandomString } from 'src/utils';
 
@@ -19,8 +19,6 @@ export class InspectionCertsService {
   constructor(
     @InjectRepository(InspectionCert)
     private readonly inspectionCertRepository: InspectionCertRepository,
-    @InjectRepository(Car)
-    private readonly carRepository: CarRepository,
   ) {}
 
   async findAll() {
