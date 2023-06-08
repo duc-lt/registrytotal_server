@@ -1,3 +1,5 @@
+import { FilterAreaUnit, FilterTimeUnit } from '../enums/filters.enum';
+
 type FilterProviderData = {
   providerCode: string;
 };
