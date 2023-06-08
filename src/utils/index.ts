@@ -4,3 +4,5 @@ export * from './response-data.type';
 export * from './response.interceptor';
 export * from './get-key-by-value';
 export * from './custom-parse-int.pipe';
+export * from './create-random-string';
+export * from './random-enum-value';

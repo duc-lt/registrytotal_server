@@ -15,6 +15,7 @@ export class RegistrationCert {
   id: string;
 
   @OneToOne(() => Car, (car) => car.registrationCert)
+  @JoinColumn({ name: 'car_id' })
   car: Car;
 
   @Column({ name: 'cert_number', type: 'varchar' })

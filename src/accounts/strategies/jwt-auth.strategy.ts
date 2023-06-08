@@ -8,13 +8,13 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { getKeyByValue } from 'src/utils';
 
-export function JwtAuthStrategy(role: Role) {
+export function JwtAuthStrategy(role?: Role) {
   const roleKey = getKeyByValue(Role, role);
 
   @Injectable()
   class JwtAuthStrategyMixin extends PassportStrategy(
     JwtStrategy,
-    `${roleKey.toLowerCase()}-jwt`,
+    role ? `${roleKey.toLowerCase()}-jwt` : 'all-roles-jwt',
   ) {
     constructor(
       readonly configService: ConfigService,
@@ -28,10 +28,11 @@ export function JwtAuthStrategy(role: Role) {
     }
 
     async validate(payload: JwtPayload) {
-      const account =
-        role === Role.SERVICE_PROVIDER
-          ? await this.accountsService.findProviderById(payload.id)
-          : await this.accountsService.findDepartment(payload.id);
+      const account = role
+        ? await this.accountsService.findById(payload.id)
+        : role === Role.SERVICE_PROVIDER
+        ? await this.accountsService.findProviderById(payload.id)
+        : await this.accountsService.findDepartment(payload.id);
 
       if (!account) {
         throw new UnauthorizedException();

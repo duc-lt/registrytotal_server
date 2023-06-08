@@ -4,25 +4,30 @@ import { Account } from '@accounts/entities/account.entity';
 import { AccountRepository } from '@accounts/repositories/account.repository';
 import { Role } from '@accounts/enums/role.enum';
 import { CreateAccountDto } from '@accounts/dto';
+import { ServiceProvider } from '@service-providers/entities/service-provider.entity';
+import { ServiceProviderRepository } from '@service-providers/repositories/service-provider.repository';
 
 @Injectable()
 export class AccountsService {
   constructor(
     @InjectRepository(Account)
     private readonly accountRepository: AccountRepository,
+    @InjectRepository(ServiceProvider)
+    private readonly providerRepository: ServiceProviderRepository,
   ) {}
 
   async create(createAccountDto: CreateAccountDto) {
     const { username } = createAccountDto;
-    const duplicate = await this.accountRepository.findOne({
-      where: { username },
+    const exist = await this.providerRepository.findOne({
+      where: { code: username },
     });
-    if (duplicate) {
-      throw new ForbiddenException('Tài khoản đã tồn tại');
+    if (!exist) {
+      throw new ForbiddenException('Tên tài khoản không hợp lệ');
     }
+
     const account = this.accountRepository.create({
       username,
-      password: username.toLowerCase(),
+      password: '123456',
     });
 
     return this.accountRepository.save(account);
@@ -35,6 +40,10 @@ export class AccountsService {
       },
       where: { role: Role.SERVICE_PROVIDER },
     });
+  }
+
+  async findById(id: string) {
+    return this.accountRepository.findBy({ id });
   }
 
   async findProviderById(id: string) {

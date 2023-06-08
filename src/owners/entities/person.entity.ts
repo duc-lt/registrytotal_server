@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Owner } from './owner.entity';
-import { Address } from '@addresses/entities/address.entity';
 import { TableName } from 'src/config/constants';
 
 @Entity({ name: TableName.PERSON })

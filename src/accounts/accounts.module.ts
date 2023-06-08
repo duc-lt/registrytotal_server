@@ -10,10 +10,11 @@ import { AccountAuthService } from './services/account-auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { Role } from './enums/role.enum';
 import { JwtAuthStrategy } from './strategies/jwt-auth.strategy';
+import { ServiceProvider } from '@service-providers/entities/service-provider.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Account]),
+    TypeOrmModule.forFeature([Account, ServiceProvider]),
     JwtModule,
     ConfigModule.forRoot(),
   ],
