@@ -18,10 +18,10 @@ export class AccountAuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async validate(loginDto: LoginDto) {
+  async validate(loginDto: LoginDto, role: Role) {
     const { username, password } = loginDto;
     const account = await this.accountRepository.findOne({
-      where: { username },
+      where: { username, role },
     });
 
     if (!account) {

@@ -11,17 +11,19 @@ export default class InspectionCertSeeder implements Seeder {
     const carRepository = dataSource.getRepository(Car);
     const providerRepository = dataSource.getRepository(ServiceProvider);
 
-    const [cars, providers] = await Promise.all([
-      carRepository.find({ select: { id: true }, skip: 3, take: 5 }),
-      providerRepository.find({ select: { id: true }, skip: 3, take: 5 }),
+    const [cars, [providers, providersCount]] = await Promise.all([
+      carRepository.find({ select: { id: true }, take: 50 }),
+      providerRepository.findAndCount({ select: { id: true } }),
     ]);
 
     const inspectionCerts = inspectionCertRepository.create(
-      cars.map((car, index) => ({
+      cars.map((car) => ({
         car: { id: car.id },
         certNumber: faker.vehicle.vrm(),
         expiresAt: new Date(Date.now() + 2 * 365 * 24 * 3600 * 1000),
-        provider: { id: providers[index].id },
+        provider: {
+          id: providers[Math.round(Math.random() * providersCount)].id,
+        },
       })),
     );
 

@@ -13,6 +13,7 @@ import { OwnersService } from '@owners/services/owners.service';
 import { RegistrationCert } from '@cars/entities/registration-cert.entity';
 import { RegistrationCertRepository } from '@cars/repositories/registration-cert.repository';
 import { Province } from '@addresses/entities/province.entity';
+import { IsNull } from 'typeorm';
 
 @Injectable()
 export class CarsService {
@@ -66,7 +67,7 @@ export class CarsService {
   }
 
   async searchByRegistrationNumber(certNumber: string) {
-    return this.carRepository.findOne({
+    return this.carRepository.find({
       relations: {
         registrationCert: true,
         inspectionCert: true,
@@ -74,20 +75,65 @@ export class CarsService {
           address: true,
         },
       },
-      where: [
-        {
-          registrationCert: {
-            certNumber: certNumber,
-          },
+      where: {
+        registrationCert: {
+          certNumber,
         },
-      ],
+        inspectionCert: { id: IsNull() },
+      },
     });
   }
 
-  findAll() {
-    return `This action returns all cars`;
+  async findAll() {
+    return this.carRepository.find({
+      relations: {
+        registrationCert: {
+          registryProvince: true,
+        },
+        inspectionCert: {
+          provider: {
+            address: {
+              commune: {
+                district: {
+                  province: true,
+                },
+              },
+            },
+          },
+        },
+        owner: true,
+      },
+    });
   }
 
+  async findAllByProvider(providerCode: string) {
+    return this.carRepository.find({
+      relations: {
+        registrationCert: {
+          registryProvince: true,
+        },
+        inspectionCert: {
+          provider: {
+            address: {
+              commune: {
+                district: {
+                  province: true,
+                },
+              },
+            },
+          },
+        },
+        owner: true,
+      },
+      where: {
+        inspectionCert: {
+          provider: {
+            code: providerCode,
+          },
+        },
+      },
+    });
+  }
   findOne(id: string) {
     return `This action returns a #${id} car`;
   }

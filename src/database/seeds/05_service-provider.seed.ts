@@ -3,6 +3,7 @@ import { Account } from '../../accounts/entities/account.entity';
 import { DataSource } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 import { Address } from '../../addresses/entities/address.entity';
+import { Role } from '@accounts/enums/role.enum';
 
 export default class ServiceProviderSeeder implements Seeder {
   async run(dataSource: DataSource) {
@@ -11,10 +12,10 @@ export default class ServiceProviderSeeder implements Seeder {
     const addressRepository = dataSource.getRepository(Address);
     const accounts = await accountRepository.find({
       select: { id: true, username: true },
+      where: { role: Role.SERVICE_PROVIDER },
     });
     const addresses = await addressRepository.find({
       select: { id: true },
-      skip: 0,
       take: accounts.length,
     });
 
