@@ -13,7 +13,8 @@ import { OwnersService } from '@owners/services/owners.service';
 import { RegistrationCert } from '@cars/entities/registration-cert.entity';
 import { RegistrationCertRepository } from '@cars/repositories/registration-cert.repository';
 import { Province } from '@addresses/entities/province.entity';
-import { IsNull } from 'typeorm';
+import { IsNull, Raw } from 'typeorm';
+import { FilterData, FilterTime } from '@cars/types/filter.type';
 
 @Injectable()
 export class CarsService {
@@ -84,7 +85,14 @@ export class CarsService {
     });
   }
 
-  async findAll() {
+  async findAll(
+    page: number,
+    take: number,
+    level?: keyof FilterData,
+    data?: FilterData,
+    timeUnit?: keyof FilterTime,
+    time?: FilterTime,
+  ) {
     return this.carRepository.find({
       relations: {
         registrationCert: {
@@ -103,10 +111,71 @@ export class CarsService {
         },
         owner: true,
       },
+      where: {
+        inspectionCert: {
+          ...(level === 'provider'
+            ? { provider: { code: data.provider.providerCode } }
+            : level === 'area'
+            ? {
+                provider: {
+                  address: {
+                    commune: {
+                      ...(data.area.communeCode && {
+                        code: data.area.communeCode,
+                      }),
+                      district: {
+                        ...(data.area.districtCode && {
+                          code: data.area.districtCode,
+                        }),
+                        province: {
+                          code: data.area.provinceCode,
+                        },
+                      },
+                    },
+                  },
+                },
+              }
+            : {}),
+          ...(timeUnit != null
+            ? {
+                createdAt:
+                  timeUnit === 'month'
+                    ? Raw(
+                        (alias) =>
+                          `YEAR(${alias}) = :year && MONTH(${alias}) = :month`,
+                        {
+                          year: time[timeUnit].year,
+                          month: time[timeUnit].month,
+                        },
+                      )
+                    : timeUnit === 'quarter'
+                    ? Raw(
+                        (alias) =>
+                          `YEAR(${alias}) = :year && QUARTER(${alias}) = :quarter`,
+                        {
+                          year: time[timeUnit].year,
+                          quarter: time[timeUnit].quarter,
+                        },
+                      )
+                    : Raw((alias) => `YEAR(${alias}) = :year`, {
+                        year: time[timeUnit].year,
+                      }),
+              }
+            : {}),
+        },
+      },
+      skip: (page - 1) * take,
+      take,
     });
   }
 
-  async findAllByProvider(providerCode: string) {
+  async findAllByProvider(
+    providerCode: string,
+    page: number,
+    take: number,
+    timeUnit?: keyof FilterTime,
+    time?: FilterTime,
+  ) {
     return this.carRepository.find({
       relations: {
         registrationCert: {
@@ -130,10 +199,37 @@ export class CarsService {
           provider: {
             code: providerCode,
           },
+          ...(timeUnit != null
+            ? {
+                createdAt:
+                  timeUnit === 'month'
+                    ? Raw(
+                        (alias) =>
+                          `YEAR(${alias}) = :year && MONTH(${alias}) = :month`,
+                        {
+                          year: time[timeUnit].year,
+                          month: time[timeUnit].month,
+                        },
+                      )
+                    : timeUnit === 'quarter'
+                    ? Raw(
+                        (alias) =>
+                          `YEAR(${alias}) = :year && QUARTER(${alias}) = :quarter`,
+                        {
+                          year: time[timeUnit].year,
+                          quarter: time[timeUnit].quarter,
+                        },
+                      )
+                    : Raw((alias) => `YEAR(${alias}) = :year`, {
+                        year: time[timeUnit].year,
+                      }),
+              }
+            : {}),
         },
       },
     });
   }
+
   findOne(id: string) {
     return `This action returns a #${id} car`;
   }
