@@ -13,13 +13,7 @@ import {
 import { InspectionCertsService } from '../services/inspection-certs.service';
 import { CreateInspectionCertDto } from '../dto/create-inspection-cert.dto';
 import { UpdateInspectionCertDto } from '../dto/update-inspection-cert.dto';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@accounts/guards/jwt-auth.guard';
 import { Role } from '@accounts/enums/role.enum';
 import { RolesGuard } from '@accounts/guards/roles.guard';
@@ -28,7 +22,7 @@ import { Request } from 'express';
 import { Account } from '@accounts/entities/account.entity';
 
 @ApiTags('[Trung tâm đăng kiểm][Inspection] Đăng kiểm')
-@Controller('provider/inspection')
+@Controller('provider/inspection/certs')
 export class ProviderInspectionCertsController {
   constructor(
     private readonly inspectionCertsService: InspectionCertsService,
