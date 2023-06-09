@@ -3,8 +3,17 @@ import { Account } from '@accounts/entities/account.entity';
 import { Role } from '@accounts/enums/role.enum';
 import { JwtAuthGuard } from '@accounts/guards/jwt-auth.guard';
 import { RolesGuard } from '@accounts/guards/roles.guard';
+import { ProviderCarFilterQueryDto } from '@cars/dto/provider-car-filter-query.dto';
 import { CarsService } from '@cars/services/cars.service';
-import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Req,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -43,9 +52,22 @@ export class ProviderCarsController {
   })
   @UseGuards(JwtAuthGuard(Role.SERVICE_PROVIDER), RolesGuard)
   @HasRole(Role.SERVICE_PROVIDER)
-  async findAll(@Req() req: Request<Account>) {
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async findAll(
+    @Req() req: Request<Account>,
+    @Query() filters: ProviderCarFilterQueryDto,
+  ) {
+    const { page, take, timeUnit, year, month, quarter } = filters;
     return this.carsService.findAllByProvider(
       (req.user as Account).provider.code,
+      page,
+      take,
+      timeUnit,
+      {
+        year: { year },
+        month: { year, month },
+        quarter: { year, quarter },
+      },
     );
   }
 }

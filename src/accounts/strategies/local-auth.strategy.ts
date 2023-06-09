@@ -3,7 +3,9 @@ import { AccountAuthService } from '@accounts/services/account-auth.service';
 import { Injectable, UnauthorizedException, mixin } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { StatusCodes } from 'src/base-interface';
 import { getKeyByValue } from 'src/utils';
+import { UserError } from 'src/utils/error';
 
 export function LocalAuthStrategy(role: Role) {
   const roleKey = getKeyByValue(Role, role);
@@ -26,9 +28,11 @@ export function LocalAuthStrategy(role: Role) {
         role,
       );
       if (!account) {
-        throw new UnauthorizedException('Tài khoản hoặc mật khẩu không đúng');
+        throw new UserError(
+          StatusCodes.INVALID_CREDENTIALS,
+          'Tài khoản hoặc mật khẩu không đúng',
+        );
       }
-
       return account;
     }
   }
