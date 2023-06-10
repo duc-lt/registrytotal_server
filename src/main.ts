@@ -6,6 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './utils/http-exception-filter';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ResponseDataInterceptor } from './utils';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -24,6 +25,7 @@ async function bootstrap() {
   app.setGlobalPrefix('/api');
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new ResponseDataInterceptor());
   app.useStaticAssets(join(__dirname, '..', 'public'));
 
   const config = new DocumentBuilder()
