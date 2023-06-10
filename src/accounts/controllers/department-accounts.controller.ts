@@ -1,6 +1,6 @@
 import { HasRole } from '@accounts/decorators/role.decorator';
 import { User } from '@accounts/decorators/user.decorator';
-import { CreateAccountDto, LoginDto } from '@accounts/dto';
+import { CreateAccountDto, DepartmentLoginDto } from '@accounts/dto';
 import { Account } from '@accounts/entities/account.entity';
 import { Role } from '@accounts/enums/role.enum';
 import { JwtAuthGuard } from '@accounts/guards/jwt-auth.guard';
@@ -37,7 +37,7 @@ export class DepartmentAccountsController {
     summary: 'Đăng nhập tài khoản Cục đăng kiểm',
     operationId: 'login',
   })
-  @ApiBody({ type: LoginDto })
+  @ApiBody({ type: DepartmentLoginDto })
   @UseGuards(LocalAuthGuard(Role.DEPARTMENT))
   async login(@User() user: Account) {
     return this.accountAuthService.login(user);

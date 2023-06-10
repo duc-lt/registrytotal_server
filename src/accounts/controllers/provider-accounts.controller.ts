@@ -1,5 +1,5 @@
 import { User } from '@accounts/decorators/user.decorator';
-import { LoginDto } from '@accounts/dto';
+import { ProviderLoginDto } from '@accounts/dto';
 import { Account } from '@accounts/entities/account.entity';
 import { Role } from '@accounts/enums/role.enum';
 import { LocalAuthGuard } from '@accounts/guards/local-auth.guard';
@@ -17,7 +17,7 @@ export class ProviderAccountsController {
     summary: 'Đăng nhập tài khoản Trung tâm đăng kiểm',
     operationId: 'login',
   })
-  @ApiBody({ type: LoginDto })
+  @ApiBody({ type: ProviderLoginDto })
   @UseGuards(LocalAuthGuard(Role.SERVICE_PROVIDER))
   async login(@User() user: Account) {
     return this.accountAuthService.login(user);

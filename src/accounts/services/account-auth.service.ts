@@ -1,4 +1,4 @@
-import { LoginDto } from '@accounts/dto';
+import { ProviderLoginDto, DepartmentLoginDto } from '@accounts/dto';
 import { Account } from '@accounts/entities/account.entity';
 import { Role } from '@accounts/enums/role.enum';
 import { AccountRepository } from '@accounts/repositories/account.repository';
@@ -18,7 +18,7 @@ export class AccountAuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async validate(loginDto: LoginDto, role: Role) {
+  async validate(loginDto: ProviderLoginDto | DepartmentLoginDto, role: Role) {
     const { username, password } = loginDto;
     const account = await this.accountRepository.findOne({
       where: { username, role },
