@@ -58,22 +58,18 @@ export class AddressesService {
     districtCode: number,
     provinceCode: number,
   ) {
-    const address = await this.addressRepository.findOne({
+    const address = await this.communeRepository.findOne({
       relations: {
-        commune: {
-          district: {
-            province: true,
-          },
+        district: {
+          province: true,
         },
       },
       where: {
-        commune: {
-          code: communeCode,
-          district: {
-            code: districtCode,
-            province: {
-              code: provinceCode,
-            },
+        code: communeCode,
+        district: {
+          code: districtCode,
+          province: {
+            code: provinceCode,
           },
         },
       },

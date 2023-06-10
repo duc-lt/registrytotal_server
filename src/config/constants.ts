@@ -11,6 +11,8 @@ export enum TableName {
   CAR = 'cars',
   REGISTRATION_CERT = 'registration_certs',
   INSPECTION_CERT = 'inspection_certs',
+  INSPECTION_RESULT = 'inspection_results',
+  INSPECTION_CRITERIA = 'inspection_criteria',
 
   OWNER = 'owners',
   PERSON = 'persons',

@@ -9,7 +9,7 @@ export const carsXlsxSchema: XlsxSchema = {
   'Chủ sở hữu': {
     prop: 'owner',
     type: {
-      Tên: {
+      'Tên chủ sở hữu': {
         prop: 'name',
         type: String,
       },
@@ -89,25 +89,4 @@ export const carsXlsxSchema: XlsxSchema = {
     type: String,
     oneOf: Object.values(CarUse),
   },
-  // 'Thông tin đăng kiểm xe': {
-  //   prop: 'inspectionInfo',
-  //   type: {
-  //     'Mã số đăng kiểm xe': {
-  //       prop: 'certNumber',
-  //       type: String,
-  //     },
-  //     'Ngày cấp': {
-  //       prop: 'createdAt',
-  //       type: Date,
-  //     },
-  //     'Ngày hết hạn': {
-  //       prop: 'expiresAt',
-  //       type: Date,
-  //     },
-  //     'Mã trung tâm đăng kiểm': {
-  //       prop: 'serviceProvider',
-  //       type: String,
-  //     },
-  //   },
-  // },
 };

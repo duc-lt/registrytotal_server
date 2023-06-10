@@ -11,6 +11,7 @@ import { InspectionCert } from '@inspection-certs/entities/inspection-cert.entit
 import { CarUse } from '../enums/car-uses.enum';
 import { Owner } from '@owners/entities/owner.entity';
 import { TableName } from 'src/config/constants';
+import { InspectionResult } from '@inspection-certs/entities/inspection-result.entity';
 
 @Entity({ name: TableName.CAR })
 export class Car {
@@ -26,6 +27,9 @@ export class Car {
 
   @OneToOne(() => InspectionCert, (cert) => cert.car)
   inspectionCert?: InspectionCert;
+
+  @OneToOne(() => InspectionResult, (result) => result.car)
+  inspectionResult?: InspectionResult;
 
   @Column({ type: 'varchar', length: 30 })
   maker: string;

@@ -67,8 +67,8 @@ export class CarsService {
     );
   }
 
-  async searchByRegistrationNumber(certNumber: string) {
-    return this.carRepository.find({
+  async searchByRegistrationNumber(registrationNumber: string) {
+    return this.carRepository.findOne({
       relations: {
         registrationCert: true,
         inspectionCert: true,
@@ -78,9 +78,8 @@ export class CarsService {
       },
       where: {
         registrationCert: {
-          certNumber,
+          registrationNumber,
         },
-        inspectionCert: { id: IsNull() },
       },
     });
   }
