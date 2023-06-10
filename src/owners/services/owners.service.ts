@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOwnerDto } from '../dto/create-owner.dto';
-import { UpdateOwnerDto } from '../dto/update-owner.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Owner } from '@owners/entities/owner.entity';
 import { OwnerRepository } from '@owners/repositories/owner.repository';
@@ -34,6 +32,22 @@ export class OwnersService {
     taxId?: string;
   }) {
     const { name, address, identityNumber, taxId } = owner;
+    const duplicate = identityNumber
+      ? await this.personRepository.findOne({
+          relations: { owner: true },
+          where: { identityNumber },
+        })
+      : taxId
+      ? await this.organisationRepository.findOne({
+          relations: { owner: true },
+          where: { taxId },
+        })
+      : undefined;
+
+    if (duplicate) {
+      return duplicate.owner;
+    }
+
     const newAddress = await this.addressesService.create(address);
     const newOwner = this.ownerRepository.create({
       name,
@@ -60,21 +74,5 @@ export class OwnersService {
     }
 
     return createdOwner;
-  }
-
-  findAll() {
-    return `This action returns all owners`;
-  }
-
-  findOne(id: string) {
-    return `This action returns a #${id} owner`;
-  }
-
-  update(id: string, updateOwnerDto: UpdateOwnerDto) {
-    return `This action updates a #${id} owner`;
-  }
-
-  remove(id: string) {
-    return `This action removes a #${id} owner`;
   }
 }

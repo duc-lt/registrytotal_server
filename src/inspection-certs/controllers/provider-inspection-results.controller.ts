@@ -1,11 +1,13 @@
 import { HasRole } from '@accounts/decorators/role.decorator';
+import { Account } from '@accounts/entities/account.entity';
 import { Role } from '@accounts/enums/role.enum';
 import { JwtAuthGuard } from '@accounts/guards/jwt-auth.guard';
 import { RolesGuard } from '@accounts/guards/roles.guard';
 import { CreateInspectionResultDto } from '@inspection-certs/dto/create-inspection-result.dto';
 import { InspectionResultsService } from '@inspection-certs/services/inspection-results.service';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @ApiTags('[Trung tâm đăng kiểm][Inspection] Đăng kiểm')
 @Controller('provider/inspection/results')
@@ -25,7 +27,11 @@ export class ProviderInspectionResultsController {
   @HasRole(Role.SERVICE_PROVIDER)
   async createResult(
     @Body() createInspectionResultDto: CreateInspectionResultDto,
+    @Req() req: Request<Account>,
   ) {
-    return this.inspectionResultsService.create(createInspectionResultDto);
+    return this.inspectionResultsService.create(
+      createInspectionResultDto,
+      (req.user as Account).provider.id,
+    );
   }
 }

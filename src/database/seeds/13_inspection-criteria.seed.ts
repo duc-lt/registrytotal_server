@@ -15,22 +15,30 @@ export default class InspectionCriteriaSeeder implements Seeder {
     const inspectionResults = await inspectionResultRepository.find({
       select: { id: true },
     });
-    const inspectionCriteria = inspectionCriteriaRepository.create(
-      inspectionResults
-        .map((result) => {
-          return Object.values(Criteria).map((criteria, index) => ({
-            result: { id: result.id },
-            criteria,
-            pass:
-              result.status === InspectionStatus.PASS
-                ? true
-                : index === 0
-                ? false
-                : Math.random() > 0.5,
-          }));
-        })
-        .flat(),
-    );
+    // const inspectionCriteria = inspectionCriteriaRepository.create(
+    //   inspectionResults
+    //     .map((result) => {
+    //       return Object.values(Criteria).map((criteria, index) => ({
+    //         result: { id: result.id },
+    //         criteria,
+    //         pass: result.status === InspectionStatus.PASS ? true : index === 0,
+    //       }));
+    //     })
+    //     .flat(),
+    // );
+    const inspectionCriteria = [];
+    for (const result of inspectionResults) {
+      for (const criteria of Object.values(Criteria)) {
+        inspectionCriteria.push({
+          result: { id: result.id },
+          criteria,
+          pass:
+            result.status === InspectionStatus.PASS
+              ? true
+              : Object.values(Criteria).indexOf(criteria) === 0,
+        });
+      }
+    }
 
     await inspectionCriteriaRepository.save(inspectionCriteria);
   }

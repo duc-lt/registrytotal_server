@@ -12,6 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { InspectionCriteria } from './inspection-criteria.entity';
+import { ServiceProvider } from '@service-providers/entities/service-provider.entity';
 
 @Entity({ name: TableName.INSPECTION_RESULT })
 export class InspectionResult {
@@ -35,8 +36,12 @@ export class InspectionResult {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @Column({ name: 'revisit_at', type: 'timestamp', nullable: true })
-  revisitAt?: Date;
+  @Column({ name: 'inspector_name' })
+  inspectorName: string;
+
+  @OneToOne(() => ServiceProvider)
+  @JoinColumn({ name: 'provider_id' })
+  provider: ServiceProvider;
 
   @OneToMany(() => InspectionCriteria, (criteria) => criteria.result)
   criteria: InspectionCriteria[];

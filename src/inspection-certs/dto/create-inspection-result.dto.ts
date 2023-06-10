@@ -25,4 +25,9 @@ export class CreateInspectionResultDto {
   @IsInstance(Map)
   @IsBoolean({ each: true })
   result: Map<Criteria, boolean>;
+
+  @ApiProperty({ required: true })
+  @IsNotEmpty()
+  @IsString()
+  inspectorName: string;
 }

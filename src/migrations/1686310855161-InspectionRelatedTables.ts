@@ -39,9 +39,12 @@ export class InspectionRelatedTables1686310855161
             default: 'CURRENT_TIMESTAMP',
           },
           {
-            name: 'revisit_at',
-            type: 'timestamp',
-            isNullable: true,
+            name: 'inspector_name',
+            type: 'varchar',
+          },
+          {
+            name: 'provider_id',
+            type: 'varchar',
           },
         ],
       }),
@@ -71,6 +74,7 @@ export class InspectionRelatedTables1686310855161
           {
             name: 'pass',
             type: 'boolean',
+            isNullable: true,
           },
         ],
       }),

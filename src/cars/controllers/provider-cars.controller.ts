@@ -34,14 +34,16 @@ export class ProviderCarsController {
   })
   @ApiBearerAuth()
   @ApiQuery({
-    name: 'certnum',
+    name: 'registration_num',
     description: 'Biển số xe',
     required: true,
   })
   @UseGuards(JwtAuthGuard(Role.SERVICE_PROVIDER), RolesGuard)
   @HasRole(Role.SERVICE_PROVIDER)
-  async searchByRegistrationNumber(@Query('certnum') certNumber: string) {
-    return this.carsService.searchByRegistrationNumber(certNumber);
+  async searchByRegistrationNumber(
+    @Query('registration_num') registrationNumber: string,
+  ) {
+    return this.carsService.searchByRegistrationNumber(registrationNumber);
   }
 
   @Get()

@@ -1,6 +1,8 @@
 import { Car } from '@cars/entities/car.entity';
+import { faker } from '@faker-js/faker';
 import { InspectionResult } from '@inspection-certs/entities/inspection-result.entity';
 import { InspectionStatus } from '@inspection-certs/enums/inspection-status.enum';
+import { ServiceProvider } from '@service-providers/entities/service-provider.entity';
 import { DataSource, IsNull, Not } from 'typeorm';
 import { Seeder } from 'typeorm-extension';
 
@@ -9,29 +11,42 @@ export default class InspectionResultSeeder implements Seeder {
     const inspectionResultRepository =
       dataSource.getRepository(InspectionResult);
     const carRepository = dataSource.getRepository(Car);
+    const providerRepository = dataSource.getRepository(ServiceProvider);
 
-    const [failCars, passCars] = await Promise.all([
+    const [failCars, passCars, providers] = await Promise.all([
       carRepository.find({
         relations: {
-          inspectionCert: true,
+          inspectionCert: {
+            provider: true,
+          },
         },
         where: {
           inspectionCert: {
             id: IsNull(),
           },
         },
-        select: { id: true },
-        take: 5,
+        select: {
+          id: true,
+        },
+        take: 3,
       }),
       carRepository.find({
         relations: {
-          inspectionCert: true,
+          inspectionCert: {
+            provider: true,
+          },
         },
         where: {
           inspectionCert: {
             id: Not(IsNull()),
           },
         },
+        select: {
+          id: true,
+          inspectionCert: { provider: { id: true }, id: true },
+        },
+      }),
+      providerRepository.find({
         select: { id: true },
       }),
     ]);
@@ -42,9 +57,12 @@ export default class InspectionResultSeeder implements Seeder {
         status: car?.inspectionCert?.id
           ? InspectionStatus.PASS
           : InspectionStatus.FAIL,
-        revisitAt: car?.inspectionCert?.id
-          ? null
-          : new Date(Date.now() + 30 * 24 * 3600 * 1000),
+        inspectorName: faker.name.fullName(),
+        provider: {
+          id: car?.inspectionCert?.id
+            ? car?.inspectionCert?.provider?.id
+            : providers[Math.round(Math.random() * providers.length)].id,
+        },
       })),
     );
 
