@@ -75,6 +75,9 @@ export class CarsService {
         owner: {
           address: true,
         },
+        inspectionResult: {
+          criteria: true,
+        },
       },
       where: {
         registrationCert: {
@@ -109,6 +112,7 @@ export class CarsService {
           },
         },
         owner: true,
+        inspectionResult: true,
       },
       where: {
         inspectionCert: {
@@ -192,6 +196,7 @@ export class CarsService {
           },
         },
         owner: true,
+        inspectionResult: true,
       },
       where: {
         inspectionCert: {
@@ -226,6 +231,8 @@ export class CarsService {
             : {}),
         },
       },
+      skip: (page - 1) * take,
+      take,
     });
   }
 

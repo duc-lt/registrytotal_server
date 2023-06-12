@@ -22,7 +22,9 @@ export class InspectionCertsService {
       where: {
         car: {
           id: createInspectionCertDto.carId,
-          inspectionResult: { status: InspectionStatus.PASS },
+          inspectionResult: {
+            status: InspectionStatus.PASS,
+          },
         },
       },
     });
