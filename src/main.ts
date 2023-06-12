@@ -23,7 +23,7 @@ async function bootstrap() {
     }),
   );
   app.setGlobalPrefix('/api');
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new ResponseDataInterceptor());
   app.useStaticAssets(join(__dirname, '..', 'public'));
