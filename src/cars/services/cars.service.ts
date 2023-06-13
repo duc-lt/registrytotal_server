@@ -13,7 +13,7 @@ import { OwnersService } from '@owners/services/owners.service';
 import { RegistrationCert } from '@cars/entities/registration-cert.entity';
 import { RegistrationCertRepository } from '@cars/repositories/registration-cert.repository';
 import { Province } from '@addresses/entities/province.entity';
-import { IsNull, Raw } from 'typeorm';
+import { IsNull, Like, Raw } from 'typeorm';
 import { FilterData, FilterTime } from '@cars/types/filter.type';
 
 @Injectable()
@@ -91,7 +91,7 @@ export class CarsService {
       },
       where: {
         registrationCert: {
-          registrationNumber,
+          registrationNumber: Like(`%${registrationNumber}%`),
         },
       },
     });
