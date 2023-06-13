@@ -23,7 +23,7 @@ export class InspectionCertsService {
     providerId: string,
   ) {
     const duplicate = await this.carRepository.findOne({
-      relations: { inspectionResult: true },
+      relations: { inspectionResult: true, inspectionCert: { provider: true } },
       where: {
         id: createInspectionCertDto.carId,
         inspectionResult: {
@@ -37,6 +37,7 @@ export class InspectionCertsService {
     });
 
     if (duplicate) {
+      duplicate.inspectionCert.provider.id = providerId;
       duplicate.inspectionCert.certNumber = createRandomString();
       duplicate.inspectionCert.expiresAt = new Date(
         Date.now() + 2 * 365 * 24 * 3600 * 1000,
