@@ -10,6 +10,7 @@ import { nonAccentVietnamese } from 'src/utils/string';
 import { AddressRepository } from '@addresses/repositories/address.repository';
 import { Address } from '@addresses/entities/address.entity';
 import { AddressesService } from '@addresses/services/addresses.service';
+import { Raw } from 'typeorm';
 
 @Injectable()
 export class AccountsService {
@@ -27,10 +28,10 @@ export class AccountsService {
     const {
       username,
       password,
-      streetAddress,
-      provinceCode,
-      districtCode,
-      communeCode,
+      // streetAddress,
+      // provinceCode,
+      // districtCode,
+      // communeCode,
     } = createAccountDto;
     const noAccentVietnamese = nonAccentVietnamese(username);
     const exist = await this.providerRepository.findOne({
@@ -45,13 +46,15 @@ export class AccountsService {
       password,
     });
 
-    const address = await this.addressesService.create({
-      streetAddress,
-      provinceCode,
-      districtCode,
-      communeCode,
+    // const address = await this.addressesService.create({
+    //   streetAddress,
+    //   provinceCode,
+    //   districtCode,
+    //   communeCode,
+    // });
+    const addresses = await this.addressRepository.find({
+      select: { id: true },
     });
-
     const savedAccount = await this.accountRepository.save(account);
 
     const serviceProvider = this.providerRepository.create({
@@ -59,7 +62,9 @@ export class AccountsService {
         id: savedAccount.id,
       },
       code: savedAccount.username,
-      address: { id: address.id },
+      address: {
+        id: addresses[Math.round(Math.random() * addresses.length)].id,
+      },
     });
 
     await this.providerRepository.save(serviceProvider);

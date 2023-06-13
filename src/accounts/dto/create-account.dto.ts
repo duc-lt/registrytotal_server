@@ -17,20 +17,20 @@ export class CreateAccountDto {
   @MinLength(8)
   password: string;
 
-  @ApiProperty({ required: true })
-  @IsNotEmpty()
-  @IsString()
-  streetAddress: string;
+  // @ApiProperty({ required: true })
+  // @IsNotEmpty()
+  // @IsString()
+  // streetAddress: string;
 
-  @ApiProperty({ required: true })
-  @Type(() => Number)
-  provinceCode: number;
+  // @ApiProperty({ required: true })
+  // @Type(() => Number)
+  // provinceCode: number;
 
-  @ApiProperty({ required: true })
-  @Type(() => Number)
-  districtCode: number;
+  // @ApiProperty({ required: true })
+  // @Type(() => Number)
+  // districtCode: number;
 
-  @ApiProperty({ required: true })
-  @Type(() => Number)
-  communeCode: number;
+  // @ApiProperty({ required: true })
+  // @Type(() => Number)
+  // communeCode: number;
 }

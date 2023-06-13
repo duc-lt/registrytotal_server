@@ -350,7 +350,7 @@ export class CarsService {
     providerCode: string,
   ) {
     const [nearExpireCount, newInspectedCount] = await Promise.all([
-      this.carRepository.find({
+      this.carRepository.count({
         relations: {
           registrationCert: {
             registryProvince: true,
