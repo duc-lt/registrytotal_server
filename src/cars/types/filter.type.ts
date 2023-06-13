@@ -16,9 +16,9 @@ type FilterData = {
 };
 
 type FilterTime = {
-  year: { year: number };
-  month: { year: number; month: number };
-  quarter: { year: number; quarter: number };
+  year?: { year: number };
+  month?: { year: number; month: number };
+  quarter?: { year: number; quarter: number };
 };
 
 export { FilterData, FilterTime };

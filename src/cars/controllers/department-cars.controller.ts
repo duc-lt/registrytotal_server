@@ -31,6 +31,9 @@ import { fileConfig } from '@xlsx/configs/file.config';
 
 @ApiTags('[Cục đăng kiểm][Car] Ô tô')
 @Controller('department/cars')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)
+@HasRole(Role.DEPARTMENT)
 export class DepartmentCarsController {
   constructor(private readonly carsService: CarsService) {}
 
@@ -39,14 +42,45 @@ export class DepartmentCarsController {
     summary: 'Upload file để tạo CSDL phương tiện đã qua đăng ký',
     operationId: 'create',
   })
-  @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UploadCarsFromFileDto })
-  @UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)
-  @HasRole(Role.DEPARTMENT)
   @UseInterceptors(FileInterceptor('file', fileConfig))
   async create(@UploadedFile() file: Express.Multer.File) {
     return this.carsService.create(file.path);
+  }
+
+  @Get('stats')
+  @ApiOperation({
+    summary: 'Lấy thống kê ô tô',
+    operationId: 'getStats',
+  })
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getStats(
+    @Query()
+    filters: Pick<
+      DepartmentCarFilterQueryDto,
+      | 'level'
+      | 'providerCode'
+      | 'provinceCode'
+      | 'districtCode'
+      | 'communeCode'
+      | 'year'
+      | 'month'
+    >,
+  ) {
+    const {
+      level,
+      providerCode,
+      provinceCode,
+      districtCode,
+      communeCode,
+      year,
+      month,
+    } = filters;
+    return this.carsService.getCarStats({ year, month }, level, {
+      provider: { providerCode },
+      area: { provinceCode, districtCode, communeCode },
+    });
   }
 
   @Get()
@@ -54,9 +88,6 @@ export class DepartmentCarsController {
     summary: 'Lấy danh sách ô tô',
     operationId: 'findAll',
   })
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard(Role.DEPARTMENT), RolesGuard)
-  @HasRole(Role.DEPARTMENT)
   @UsePipes(new ValidationPipe({ transform: true }))
   async findAll(@Query() filters: DepartmentCarFilterQueryDto) {
     const {
