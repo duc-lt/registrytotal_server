@@ -13,12 +13,14 @@ import { ServiceProvider } from '@service-providers/entities/service-provider.en
 import { DepartmentAccountsController } from './controllers/department-accounts.controller';
 import { ProviderAccountsController } from './controllers/provider-accounts.controller';
 import { Address } from '@addresses/entities/address.entity';
+import { AddressesModule } from '@addresses/addresses.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Account, ServiceProvider, Address]),
     JwtModule,
     ConfigModule.forRoot(),
+    AddressesModule,
   ],
   controllers: [DepartmentAccountsController, ProviderAccountsController],
   providers: [

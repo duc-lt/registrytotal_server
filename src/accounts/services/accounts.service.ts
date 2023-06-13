@@ -9,6 +9,7 @@ import { ServiceProviderRepository } from '@service-providers/repositories/servi
 import { nonAccentVietnamese } from 'src/utils/string';
 import { AddressRepository } from '@addresses/repositories/address.repository';
 import { Address } from '@addresses/entities/address.entity';
+import { AddressesService } from '@addresses/services/addresses.service';
 
 @Injectable()
 export class AccountsService {
@@ -19,10 +20,18 @@ export class AccountsService {
     private readonly providerRepository: ServiceProviderRepository,
     @InjectRepository(Address)
     private readonly addressRepository: AddressRepository,
+    private readonly addressesService: AddressesService,
   ) {}
 
   async create(createAccountDto: CreateAccountDto) {
-    const { username, password } = createAccountDto;
+    const {
+      username,
+      password,
+      streetAddress,
+      provinceCode,
+      districtCode,
+      communeCode,
+    } = createAccountDto;
     const noAccentVietnamese = nonAccentVietnamese(username);
     const exist = await this.providerRepository.findOne({
       where: { code: username },
@@ -36,18 +45,21 @@ export class AccountsService {
       password,
     });
 
-    const savedAccount = await this.accountRepository.save(account);
-    const addresses = await this.addressRepository.find({
-      select: { id: true },
+    const address = await this.addressesService.create({
+      streetAddress,
+      provinceCode,
+      districtCode,
+      communeCode,
     });
+
+    const savedAccount = await this.accountRepository.save(account);
+
     const serviceProvider = this.providerRepository.create({
       account: {
         id: savedAccount.id,
       },
       code: savedAccount.username,
-      address: {
-        id: (Math.floor(Math.random() * addresses.length) + 1).toString(),
-      },
+      address: { id: address.id },
     });
 
     await this.providerRepository.save(serviceProvider);
