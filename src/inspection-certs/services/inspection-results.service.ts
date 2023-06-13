@@ -41,7 +41,7 @@ export class InspectionResultsService {
       order: { inspectionResult: { createdAt: 'desc' } },
     });
 
-    if (!car) {
+    if (car) {
       throw new ForbiddenException('Xe không thuộc danh sách cần đăng kiểm');
     }
     const inspectionResult = this.inspectionResultRepository.create({

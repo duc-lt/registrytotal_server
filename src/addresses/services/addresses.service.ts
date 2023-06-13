@@ -77,4 +77,38 @@ export class AddressesService {
 
     return !!address;
   }
+
+  async findProvinceByCode(provinceCode: number) {
+    return this.provinceRepository.findOneBy({ code: provinceCode });
+  }
+
+  async findDistrictByCode(districtCode: number, provinceCode: number) {
+    return this.districtRepository.findOne({
+      relations: { province: true },
+      where: { code: districtCode, province: { code: provinceCode } },
+    });
+  }
+
+  async findCommuneByCode(
+    communeCode: number,
+    districtCode: number,
+    provinceCode: number,
+  ) {
+    return this.communeRepository.findOne({
+      relations: {
+        district: {
+          province: true,
+        },
+      },
+      where: {
+        code: communeCode,
+        district: {
+          code: districtCode,
+          province: {
+            code: provinceCode,
+          },
+        },
+      },
+    });
+  }
 }
