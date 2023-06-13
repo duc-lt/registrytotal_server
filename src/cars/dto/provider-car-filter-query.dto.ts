@@ -53,4 +53,8 @@ export class ProviderCarFilterQueryDto {
   @Max(4)
   @Type(() => Number)
   quarter?: number;
+
+  @ApiPropertyOptional()
+  @Type(() => String)
+  registration_num?: string;
 }

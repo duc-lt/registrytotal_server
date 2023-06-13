@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class ProviderLoginDto {
-  @ApiProperty({ required: true, example: 'yxnri' })
+  @ApiProperty({ required: true, example: 'trungtamdangkiem' })
   @IsNotEmpty()
   @IsString()
   username: string;

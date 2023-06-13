@@ -13,10 +13,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
+    const response = ctx.getResponse<Response>();
     const responseData: ResponseData = {
       success: false,
       statusCode: status,
-      payload: null,
       error: {
         detail: exception.getResponse(),
         timestamp: new Date().toISOString(),
@@ -24,6 +24,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       },
     };
 
-    return responseData;
+    return response.json(responseData);
   }
 }

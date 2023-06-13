@@ -70,11 +70,21 @@ export class CarsService {
   async searchByRegistrationNumber(registrationNumber: string) {
     return this.carRepository.findOne({
       relations: {
-        registrationCert: true,
-        inspectionCert: true,
-        owner: {
-          address: true,
+        registrationCert: {
+          registryProvince: true,
         },
+        inspectionCert: {
+          provider: {
+            address: {
+              commune: {
+                district: {
+                  province: true,
+                },
+              },
+            },
+          },
+        },
+        owner: true,
         inspectionResult: {
           criteria: true,
         },
@@ -95,7 +105,21 @@ export class CarsService {
     timeUnit?: keyof FilterTime,
     time?: FilterTime,
   ) {
-    return this.carRepository.find({
+    const conditions: any = {
+      inspectionCert: {},
+    };
+    const additionalCondition = this.buildConditions(
+      level,
+      data,
+      timeUnit,
+      time,
+    );
+
+    conditions.inspectionCert = {
+      ...conditions.inspectionCert,
+      ...additionalCondition,
+    };
+    const [cars, total] = await this.carRepository.findAndCount({
       relations: {
         registrationCert: {
           registryProvince: true,
@@ -114,62 +138,11 @@ export class CarsService {
         owner: true,
         inspectionResult: true,
       },
-      where: {
-        inspectionCert: {
-          ...(level === 'provider'
-            ? { provider: { code: data.provider.providerCode } }
-            : level === 'area'
-            ? {
-                provider: {
-                  address: {
-                    commune: {
-                      ...(data.area.communeCode && {
-                        code: data.area.communeCode,
-                      }),
-                      district: {
-                        ...(data.area.districtCode && {
-                          code: data.area.districtCode,
-                        }),
-                        province: {
-                          code: data.area.provinceCode,
-                        },
-                      },
-                    },
-                  },
-                },
-              }
-            : {}),
-          ...(timeUnit != null
-            ? {
-                createdAt:
-                  timeUnit === 'month'
-                    ? Raw(
-                        (alias) =>
-                          `YEAR(${alias}) = :year && MONTH(${alias}) = :month`,
-                        {
-                          year: time[timeUnit].year,
-                          month: time[timeUnit].month,
-                        },
-                      )
-                    : timeUnit === 'quarter'
-                    ? Raw(
-                        (alias) =>
-                          `YEAR(${alias}) = :year && QUARTER(${alias}) = :quarter`,
-                        {
-                          year: time[timeUnit].year,
-                          quarter: time[timeUnit].quarter,
-                        },
-                      )
-                    : Raw((alias) => `YEAR(${alias}) = :year`, {
-                        year: time[timeUnit].year,
-                      }),
-              }
-            : {}),
-        },
-      },
+      where: conditions,
       skip: (page - 1) * take,
       take,
     });
+    return { cars, total };
   }
 
   async findAllByProvider(
@@ -178,8 +151,32 @@ export class CarsService {
     take: number,
     timeUnit?: keyof FilterTime,
     time?: FilterTime,
+    registration_num?: string,
   ) {
-    return this.carRepository.find({
+    const conditions: any = {
+      inspectionCert: {
+        provider: {
+          code: providerCode,
+        },
+      },
+      registrationCert: {},
+    };
+    if (registration_num) {
+      // conditions.registrationCert.registrationNumber = registration_num;
+      conditions.inspectionCert.certNumber = registration_num;
+    }
+    const additionalCondition = this.buildConditions(
+      null,
+      null,
+      timeUnit,
+      time,
+    );
+    delete additionalCondition.provider;
+    conditions.inspectionCert = {
+      ...conditions.inspectionCert,
+      ...additionalCondition,
+    };
+    const [cars, total] = await this.carRepository.findAndCount({
       relations: {
         registrationCert: {
           registryProvince: true,
@@ -198,42 +195,77 @@ export class CarsService {
         owner: true,
         inspectionResult: true,
       },
-      where: {
-        inspectionCert: {
-          provider: {
-            code: providerCode,
-          },
-          ...(timeUnit != null
-            ? {
-                createdAt:
-                  timeUnit === 'month'
-                    ? Raw(
-                        (alias) =>
-                          `YEAR(${alias}) = :year && MONTH(${alias}) = :month`,
-                        {
-                          year: time[timeUnit].year,
-                          month: time[timeUnit].month,
-                        },
-                      )
-                    : timeUnit === 'quarter'
-                    ? Raw(
-                        (alias) =>
-                          `YEAR(${alias}) = :year && QUARTER(${alias}) = :quarter`,
-                        {
-                          year: time[timeUnit].year,
-                          quarter: time[timeUnit].quarter,
-                        },
-                      )
-                    : Raw((alias) => `YEAR(${alias}) = :year`, {
-                        year: time[timeUnit].year,
-                      }),
-              }
-            : {}),
-        },
-      },
+      where: conditions,
       skip: (page - 1) * take,
       take,
     });
+    return { cars, total };
+  }
+
+  buildConditions(
+    level?: keyof FilterData,
+    data?: FilterData,
+    timeUnit?: keyof FilterTime,
+    time?: FilterTime,
+  ) {
+    const conditions: any = {
+      provider: {
+        address: {
+          commune: {
+            district: {
+              province: {},
+            },
+          },
+        },
+      },
+    };
+    if (level && data) {
+      if (level === 'provider') {
+        conditions.provider.code = data.provider.providerCode;
+      } else if (level === 'area') {
+        if (data.area.communeCode) {
+          conditions.provider.address.commune.code = data.area.communeCode;
+        }
+        if (data.area.districtCode) {
+          conditions.provider.address.commune.district.code =
+            data.area.districtCode;
+        }
+        if (data.area.provinceCode) {
+          conditions.provider.address.commune.district.province.code =
+            data.area.provinceCode;
+        }
+      }
+    }
+    if (timeUnit && time) {
+      switch (timeUnit) {
+        case 'month':
+          conditions.createdAt = Raw(
+            (alias) => `YEAR(${alias}) = :year && MONTH(${alias}) = :month`,
+            {
+              year: time[timeUnit].year,
+              month: time[timeUnit].month,
+            },
+          );
+          break;
+        case 'quarter':
+          conditions.createdAt = Raw(
+            (alias) => `YEAR(${alias}) = :year && QUARTER(${alias}) = :quarter`,
+            {
+              year: time[timeUnit].year,
+              quarter: time[timeUnit].quarter,
+            },
+          );
+          break;
+        case 'year':
+          conditions.createdAt = Raw((alias) => `YEAR(${alias}) = :year`, {
+            year: time[timeUnit].year,
+          });
+          break;
+        default:
+          break;
+      }
+    }
+    return conditions;
   }
 
   findOne(id: string) {
