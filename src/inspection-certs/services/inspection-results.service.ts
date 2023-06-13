@@ -47,6 +47,7 @@ export class InspectionResultsService {
         },
       ],
       select: { id: true },
+      order: { inspectionResult: { createdAt: 'desc' } },
     });
 
     if (!car) {
@@ -65,7 +66,7 @@ export class InspectionResultsService {
       Object.keys(result).map((key) => {
         return {
           result: { id: newInspectionResult.id },
-          criteria: Criteria[key],
+          criteria: Criteria[key.toUpperCase()],
           pass: result[key],
         };
       }),

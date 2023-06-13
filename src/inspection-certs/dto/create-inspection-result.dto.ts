@@ -4,6 +4,7 @@ import {
   IsBoolean,
   IsInstance,
   IsNotEmpty,
+  IsObject,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -17,14 +18,13 @@ export class CreateInspectionResultDto {
   @ApiProperty({
     required: true,
     example: Object.keys(Criteria).reduce((previous, key) => {
-      previous[key.toLowerCase()] = false;
+      previous[key.toLowerCase()] = true;
       return previous;
     }, {}),
   })
   @ValidateNested()
-  @IsInstance(Map)
-  @IsBoolean({ each: true })
-  result: Map<Criteria, boolean>;
+  @IsObject()
+  result: Record<Criteria, boolean>;
 
   @ApiProperty({ required: true })
   @IsNotEmpty()
