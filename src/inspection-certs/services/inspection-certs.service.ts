@@ -27,6 +27,7 @@ export class InspectionCertsService {
           },
         },
       },
+      order: { car: { inspectionResult: { createdAt: 'desc' } } },
     });
 
     if (duplicate) {
