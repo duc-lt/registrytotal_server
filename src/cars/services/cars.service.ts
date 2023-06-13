@@ -155,17 +155,6 @@ export class CarsService {
     level: keyof FilterData,
     data: FilterData,
   ) {
-    const conditions: any = {
-      inspectionCert: {},
-    };
-    const additionalCondition = this.buildConditions(level, data, 'month', {
-      month: time,
-    });
-
-    conditions.inspectionCert = {
-      ...conditions.inspectionCert,
-      ...additionalCondition,
-    };
     const cars = await this.carRepository.find({
       relations: {
         registrationCert: {
@@ -185,13 +174,43 @@ export class CarsService {
         owner: true,
         inspectionResult: true,
       },
-      where: conditions,
+      where: {
+        inspectionCert: {
+          ...(level === 'provider' && {
+            provider: { code: data.provider.providerCode },
+          }),
+          ...(level === 'area' && {
+            provider: {
+              address: {
+                commune: {
+                  ...(data.area.communeCode && { code: data.area.communeCode }),
+                  district: {
+                    ...(data.area.districtCode && {
+                      code: data.area.districtCode,
+                    }),
+                    province: {
+                      code: data.area.provinceCode,
+                    },
+                  },
+                },
+              },
+            },
+          }),
+          expiresAt: Raw(
+            (alias) => `YEAR(${alias}) = :year && MONTH(${alias}) = :month`,
+            {
+              year: time.year,
+              month: time.month,
+            },
+          ),
+        },
+      },
     });
 
     const nearExpireCount = cars.filter(
       (car) =>
-        car.inspectionCert.expiresAt.getMonth() + 1 === time.month &&
-        car.inspectionCert.expiresAt.getFullYear() === time.year,
+        car.inspectionCert?.expiresAt?.getMonth() + 1 === time.month &&
+        car.inspectionCert?.expiresAt?.getFullYear() === time.year,
     ).length;
 
     const newInspectedCount = cars.filter(
@@ -328,23 +347,6 @@ export class CarsService {
     time: { year: number; month: number },
     providerCode: string,
   ) {
-    const conditions: any = {
-      inspectionCert: {
-        provider: {
-          code: providerCode,
-        },
-      },
-      registrationCert: {},
-    };
-
-    const additionalCondition = this.buildConditions(null, null, 'month', {
-      month: time,
-    });
-    delete additionalCondition.provider;
-    conditions.inspectionCert = {
-      ...conditions.inspectionCert,
-      ...additionalCondition,
-    };
     const cars = await this.carRepository.find({
       relations: {
         registrationCert: {
@@ -364,13 +366,24 @@ export class CarsService {
         owner: true,
         inspectionResult: true,
       },
-      where: conditions,
+      where: {
+        inspectionCert: {
+          provider: { code: providerCode },
+          expiresAt: Raw(
+            (alias) => `YEAR(${alias}) = :year && MONTH(${alias}) = :month`,
+            {
+              year: time.year,
+              month: time.month,
+            },
+          ),
+        },
+      },
     });
 
     const nearExpireCount = cars.filter(
       (car) =>
-        car.inspectionCert.expiresAt.getMonth() + 1 === time.month &&
-        car.inspectionCert.expiresAt.getFullYear() === time.year,
+        car.inspectionCert?.expiresAt?.getMonth() + 1 === time.month &&
+        car.inspectionCert?.expiresAt?.getFullYear() === time.year,
     ).length;
 
     const newInspectedCount = cars.filter(

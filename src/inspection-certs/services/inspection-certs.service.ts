@@ -37,6 +37,7 @@ export class InspectionCertsService {
     });
 
     if (duplicate) {
+      duplicate.inspectionCert.certNumber = createRandomString();
       duplicate.inspectionCert.expiresAt = new Date(
         Date.now() + 2 * 365 * 24 * 3600 * 1000,
       );
