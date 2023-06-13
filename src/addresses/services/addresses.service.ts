@@ -78,22 +78,18 @@ export class AddressesService {
     return !!address;
   }
 
-  async findProvinceByCode(provinceCode: number) {
-    return this.provinceRepository.findOneBy({ code: provinceCode });
+  async findProvinces() {
+    return this.provinceRepository.find();
   }
 
-  async findDistrictByCode(districtCode: number, provinceCode: number) {
-    return this.districtRepository.findOne({
+  async findDistricts(provinceCode: number) {
+    return this.districtRepository.find({
       relations: { province: true },
-      where: { code: districtCode, province: { code: provinceCode } },
+      where: { province: { code: provinceCode } },
     });
   }
 
-  async findCommuneByCode(
-    communeCode: number,
-    districtCode: number,
-    provinceCode: number,
-  ) {
+  async findCommunes(districtCode: number, provinceCode: number) {
     return this.communeRepository.findOne({
       relations: {
         district: {
@@ -101,7 +97,6 @@ export class AddressesService {
         },
       },
       where: {
-        code: communeCode,
         district: {
           code: districtCode,
           province: {
