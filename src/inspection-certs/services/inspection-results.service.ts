@@ -32,20 +32,11 @@ export class InspectionResultsService {
         inspectionCert: true,
         inspectionResult: true,
       },
-      where: [
-        {
-          inspectionCert: { id: IsNull() },
-          id: carId,
-        },
-        {
-          inspectionResult: { status: InspectionStatus.FAIL },
-          id: carId,
-        },
-        {
-          inspectionCert: { expiresAt: MoreThan(new Date()) },
-          id: carId,
-        },
-      ],
+      where: {
+        inspectionCert: { expiresAt: MoreThan(new Date()) },
+        id: carId,
+      },
+
       select: { id: true },
       order: { inspectionResult: { createdAt: 'desc' } },
     });
