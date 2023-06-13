@@ -12,10 +12,11 @@ import { JwtAuthStrategy } from './strategies/jwt-auth.strategy';
 import { ServiceProvider } from '@service-providers/entities/service-provider.entity';
 import { DepartmentAccountsController } from './controllers/department-accounts.controller';
 import { ProviderAccountsController } from './controllers/provider-accounts.controller';
+import { Address } from '@addresses/entities/address.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Account, ServiceProvider]),
+    TypeOrmModule.forFeature([Account, ServiceProvider, Address]),
     JwtModule,
     ConfigModule.forRoot(),
   ],

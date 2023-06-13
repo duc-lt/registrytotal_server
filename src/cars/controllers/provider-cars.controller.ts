@@ -19,6 +19,7 @@ import {
   ApiOperation,
   ApiQuery,
   ApiTags,
+  PickType,
 } from '@nestjs/swagger';
 import { Request } from 'express';
 
@@ -51,6 +52,7 @@ export class ProviderCarsController {
     summary: 'Lấy thống kê ô tô',
     operationId: 'getStats',
   })
+  @ApiQuery({ type: PickType(ProviderCarFilterQueryDto, ['year', 'month']) })
   @UsePipes(new ValidationPipe({ transform: true }))
   async getStats(
     @Query()
@@ -59,7 +61,7 @@ export class ProviderCarsController {
   ) {
     const { year, month } = filters;
     return this.carsService.getCarStatsByProvider(
-      { year, month },
+      { year: +year, month: +month },
       (req.user as Account).provider.code,
     );
   }

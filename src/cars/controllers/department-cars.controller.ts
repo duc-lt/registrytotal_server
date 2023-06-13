@@ -10,6 +10,7 @@ import { FilterData, FilterTime } from '@cars/types/filter.type';
 import {
   Controller,
   Get,
+  ParseIntPipe,
   Post,
   Query,
   UploadedFile,
@@ -26,6 +27,7 @@ import {
   ApiOperation,
   ApiQuery,
   ApiTags,
+  PickType,
 } from '@nestjs/swagger';
 import { fileConfig } from '@xlsx/configs/file.config';
 
@@ -54,6 +56,18 @@ export class DepartmentCarsController {
     summary: 'Lấy thống kê ô tô',
     operationId: 'getStats',
   })
+  @ApiQuery({
+    type: PickType(DepartmentCarFilterQueryDto, [
+      'level',
+      'providerCode',
+      'provinceCode',
+      'districtCode',
+      'communeCode',
+      'year',
+      'month',
+    ]),
+  })
+  // @UsePipes(new ParseIntPipe())
   @UsePipes(new ValidationPipe({ transform: true }))
   async getStats(
     @Query()
@@ -77,7 +91,7 @@ export class DepartmentCarsController {
       year,
       month,
     } = filters;
-    return this.carsService.getCarStats({ year, month }, level, {
+    return this.carsService.getCarStats({ year: +year, month: +month }, level, {
       provider: { providerCode },
       area: { provinceCode, districtCode, communeCode },
     });
