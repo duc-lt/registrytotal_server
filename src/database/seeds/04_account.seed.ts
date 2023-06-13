@@ -12,14 +12,14 @@ export default class AccountSeeder implements Seeder {
       {
         role: Role.DEPARTMENT,
         username: 'cucdangkiem',
-        password: '123456',
+        password: '12345678',
       },
       ...Array(40)
         .fill(null)
         .map((_) => ({
           role: Role.SERVICE_PROVIDER,
           username: createRandomString(5),
-          password: '123456',
+          password: '12345678',
         })),
     ]);
 

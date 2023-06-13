@@ -24,6 +24,9 @@ import { Request } from 'express';
 
 @ApiTags('[Trung tâm đăng kiểm][Car] Ô tô')
 @Controller('provider/cars')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard(Role.SERVICE_PROVIDER), RolesGuard)
+@HasRole(Role.SERVICE_PROVIDER)
 export class ProviderCarsController {
   constructor(private readonly carsService: CarsService) {}
 
@@ -32,28 +35,40 @@ export class ProviderCarsController {
     summary: 'Tìm thông tin ô tô theo biển số',
     operationId: 'searchByRegistrationNumber',
   })
-  @ApiBearerAuth()
   @ApiQuery({
     name: 'registration_num',
     description: 'Biển số xe',
     required: true,
   })
-  @UseGuards(JwtAuthGuard(Role.SERVICE_PROVIDER), RolesGuard)
-  @HasRole(Role.SERVICE_PROVIDER)
   async searchByRegistrationNumber(
     @Query('registration_num') registrationNumber: string,
   ) {
     return this.carsService.searchByRegistrationNumber(registrationNumber);
   }
 
+  @Get('stats')
+  @ApiOperation({
+    summary: 'Lấy thống kê ô tô',
+    operationId: 'getStats',
+  })
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async getStats(
+    @Query()
+    filters: Pick<ProviderCarFilterQueryDto, 'year' | 'month'>,
+    @Req() req: Request<Account>,
+  ) {
+    const { year, month } = filters;
+    return this.carsService.getCarStatsByProvider(
+      { year, month },
+      (req.user as Account).provider.code,
+    );
+  }
+
   @Get()
-  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Lấy danh sách ô tô theo Trung tâm đăng kiểm',
     operationId: 'findAll',
   })
-  @UseGuards(JwtAuthGuard(Role.SERVICE_PROVIDER), RolesGuard)
-  @HasRole(Role.SERVICE_PROVIDER)
   @UsePipes(new ValidationPipe({ transform: true }))
   async findAll(
     @Req() req: Request<Account>,

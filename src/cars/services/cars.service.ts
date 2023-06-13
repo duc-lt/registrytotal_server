@@ -142,7 +142,63 @@ export class CarsService {
       skip: (page - 1) * take,
       take,
     });
-    return { cars, total };
+
+    const inspectedCarsCount = cars.filter(
+      (car) => car.inspectionCert != null,
+    ).length;
+
+    return { cars, total, inspectedCarsCount };
+  }
+
+  async getCarStats(
+    time: { year: number; month: number },
+    level: keyof FilterData,
+    data: FilterData,
+  ) {
+    const conditions: any = {
+      inspectionCert: {},
+    };
+    const additionalCondition = this.buildConditions(level, data, 'month', {
+      month: time,
+    });
+
+    conditions.inspectionCert = {
+      ...conditions.inspectionCert,
+      ...additionalCondition,
+    };
+    const cars = await this.carRepository.find({
+      relations: {
+        registrationCert: {
+          registryProvince: true,
+        },
+        inspectionCert: {
+          provider: {
+            address: {
+              commune: {
+                district: {
+                  province: true,
+                },
+              },
+            },
+          },
+        },
+        owner: true,
+        inspectionResult: true,
+      },
+      where: conditions,
+    });
+
+    const nearExpireCount = cars.filter(
+      (car) =>
+        car.inspectionCert.expiresAt.getMonth() + 1 === time.month &&
+        car.inspectionCert.expiresAt.getFullYear() === time.year,
+    ).length;
+
+    const newInspectedCount = cars.filter(
+      (car) => car.inspectionCert == null,
+    ).length;
+
+    return { nearExpireCount, newInspectedCount };
   }
 
   async findAllByProvider(
@@ -266,6 +322,62 @@ export class CarsService {
       }
     }
     return conditions;
+  }
+
+  async getCarStatsByProvider(
+    time: { year: number; month: number },
+    providerCode: string,
+  ) {
+    const conditions: any = {
+      inspectionCert: {
+        provider: {
+          code: providerCode,
+        },
+      },
+      registrationCert: {},
+    };
+
+    const additionalCondition = this.buildConditions(null, null, 'month', {
+      month: time,
+    });
+    delete additionalCondition.provider;
+    conditions.inspectionCert = {
+      ...conditions.inspectionCert,
+      ...additionalCondition,
+    };
+    const cars = await this.carRepository.find({
+      relations: {
+        registrationCert: {
+          registryProvince: true,
+        },
+        inspectionCert: {
+          provider: {
+            address: {
+              commune: {
+                district: {
+                  province: true,
+                },
+              },
+            },
+          },
+        },
+        owner: true,
+        inspectionResult: true,
+      },
+      where: conditions,
+    });
+
+    const nearExpireCount = cars.filter(
+      (car) =>
+        car.inspectionCert.expiresAt.getMonth() + 1 === time.month &&
+        car.inspectionCert.expiresAt.getFullYear() === time.year,
+    ).length;
+
+    const newInspectedCount = cars.filter(
+      (car) => car.inspectionCert == null,
+    ).length;
+
+    return { nearExpireCount, newInspectedCount };
   }
 
   findOne(id: string) {
