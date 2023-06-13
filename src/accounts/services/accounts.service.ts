@@ -18,7 +18,7 @@ export class AccountsService {
     @InjectRepository(ServiceProvider)
     private readonly providerRepository: ServiceProviderRepository,
     @InjectRepository(Address)
-    private readonly adrressRepository: AddressRepository,
+    private readonly addressRepository: AddressRepository,
   ) {}
 
   async create(createAccountDto: CreateAccountDto) {
@@ -37,15 +37,14 @@ export class AccountsService {
     });
 
     const savedAccount = await this.accountRepository.save(account);
-    const addresses = await this.adrressRepository.find({
+    const addresses = await this.addressRepository.find({
       select: { id: true },
     });
-
     const serviceProvider = this.providerRepository.create({
       account: {
         id: savedAccount.id,
       },
-      code: username,
+      code: savedAccount.username,
       address: {
         id: (Math.floor(Math.random() * addresses.length) + 1).toString(),
       },
