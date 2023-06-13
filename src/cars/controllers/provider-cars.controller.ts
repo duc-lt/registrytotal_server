@@ -59,7 +59,8 @@ export class ProviderCarsController {
     @Req() req: Request<Account>,
     @Query() filters: ProviderCarFilterQueryDto,
   ) {
-    const { page, take, timeUnit, year, month, quarter } = filters;
+    const { page, take, timeUnit, year, month, quarter, registration_num } =
+      filters;
     return this.carsService.findAllByProvider(
       (req.user as Account).provider.code,
       page,
@@ -70,6 +71,7 @@ export class ProviderCarsController {
         month: { year, month },
         quarter: { year, quarter },
       },
+      registration_num,
     );
   }
 }

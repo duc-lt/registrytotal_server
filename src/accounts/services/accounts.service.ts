@@ -6,6 +6,7 @@ import { Role } from '@accounts/enums/role.enum';
 import { CreateAccountDto } from '@accounts/dto';
 import { ServiceProvider } from '@service-providers/entities/service-provider.entity';
 import { ServiceProviderRepository } from '@service-providers/repositories/service-provider.repository';
+import { nonAccentVietnamese } from 'src/utils/string';
 
 @Injectable()
 export class AccountsService {
@@ -17,20 +18,35 @@ export class AccountsService {
   ) {}
 
   async create(createAccountDto: CreateAccountDto) {
-    const { username } = createAccountDto;
+    const { username, password } = createAccountDto;
+    const noAccentVietnamese = nonAccentVietnamese(username);
     const exist = await this.providerRepository.findOne({
       where: { code: username },
     });
-    if (!exist) {
-      throw new ForbiddenException('Tên tài khoản không hợp lệ');
+    if (exist) {
+      throw new ForbiddenException('Tên tài khoản đã tồn tại');
     }
 
     const account = this.accountRepository.create({
-      username,
-      password: '123456',
+      username: noAccentVietnamese.replace(/\s/g, ''),
+      password,
     });
 
-    return this.accountRepository.save(account);
+    const savedAccount = await this.accountRepository.save(account);
+
+    const serviceProvider = this.providerRepository.create({
+      account: savedAccount,
+    });
+
+    await this.providerRepository.save(serviceProvider);
+
+    // Truy vấn lại thông tin account vừa tạo để lấy thêm thông tin provider
+    return this.accountRepository.findOne({
+      where: { id: savedAccount.id },
+      relations: ['provider'],
+    });
+
+    // return this.accountRepository.save(account);
   }
 
   async findAllProviders() {
@@ -39,6 +55,7 @@ export class AccountsService {
         provider: true,
       },
       where: { role: Role.SERVICE_PROVIDER },
+      order: { createdAt: 'DESC' },
     });
   }
 

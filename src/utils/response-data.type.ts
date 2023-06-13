@@ -9,6 +9,6 @@ type ErrorDetail = {
 export type ResponseData = {
   success: SuccessStatus;
   statusCode: number;
-  payload: Payload;
+  payload?: Payload;
   error: ErrorDetail;
 };

@@ -38,16 +38,9 @@ export class DepartmentCarFilterQueryDto extends ProviderCarFilterQueryDto {
   @ApiPropertyOptional({
     description: 'Mã Trung tâm nếu lọc theo Trung tâm',
   })
-  @ValidateIf((o) => o.level === FilterLevel.PROVIDER)
-  @IsNotEmpty()
-  @IsString()
   providerCode?: string;
 
   @ApiPropertyOptional({ description: 'Mã tỉnh/thành' })
-  @ValidateIf((o) => o.level === FilterLevel.AREA)
-  @IsPositive()
-  @IsInt()
-  @Type(() => Number)
   provinceCode?: number;
 
   @ApiPropertyOptional({ description: 'Mã quận/huyện' })
