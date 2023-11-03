@@ -1,0 +1,7 @@
+<<<<<<< HEAD
+test+++
+hello world
+=======
+test
+test++
+>>>>>>> 98e2ae9... test
